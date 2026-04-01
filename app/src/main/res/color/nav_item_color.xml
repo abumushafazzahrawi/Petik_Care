@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+        <!--    Warna saat menu aktif/diklik -Biru-->
+        <item android:color="#2196F3" android:state_checked="true"/>
+        <!--    Warna saat menu tidak di pencet-->
+        <item android:color="#757575" android:state_checked="false"/>
+</selector>

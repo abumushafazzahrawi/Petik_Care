@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Petik Care</string>
+    <string name="splashscreen">Splashscreen</string>
+
+    <!--    Halaman Login-->
+    <string name="sign_in">Sign In</string>
+    <string name="silahkan_login">Silahkan login untuk melanjutkan</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+
+
+    <!--    Halaman Home Fragment-->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_out">Log out</string>
+    <string name="welcome_user">Welcome User</string>
+    <string name="show_more">Show More</string>
+    <string name="keluhan_hari">Keluhan hari ini</string>
+    <string name="role">Role</string>
+
+
+    <!--    menu_Keluhan-->
+    <string name="nama_santri">👤 Nama Santri</string>
+    <string name="keluhan">📌 Keluhan</string>
+    <string name="date">🕒 Date</string>
+    <string name="status">Status</string>
+    <string name="detail">Detail</string>
+
+    <!--    Cardview Riwayat Keluhan-->
+    <string name="riwayat_keluhan">Keluhan \n Riwayat Keluhan</string>
+    <string name="stok_obat">Obat\n Lihat Stok Obat</string>
+    <string name="kelola_user">User\n Kelola User</string>
+
+
+    <!--    Halaman Detail Keluhan-->
+    <string name="detail_keluhan">Detail Keluhan</string>
+    <string name="dibuat">🕒 Dibuat:</string>
+    <string name="ditangani">🕒 Ditangani:</string>
+    <string name="obat_diberikan">💊 Obat yang diberikan</string>
+
+
+    <!--    Menu Bottom Navigation-->
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+
+    <!--    Halaman Search-->
+    <string name="cari_keluhan">Cari Keluhan</string>
+    <string name="masukkan_kata_kunci">Masukkan kata kunci...</string>
+    <string name="pencarian_terakhir">Pencarian Terakhir</string>
+
+    <!--    Halaman Keluhan-->
+    <string name="keluhan_santri">Keluhan Santri</string>
+    <string name="pilih_obat">💊 Pilih Obat</string>
+    <string name="simpan">Simpan</string>
+    <string name="catatan">📝Catatan</string>
+    <string name="input_catatan">Masukkan catatan disini</string>
+
+    <!--    Halaman Riwayat Keluhan-->
+    <string name="riwayat">Riwayat Keluhan</string>
+
+<!--    Halaman PendingFragment-->
+    <string name="pending">Pending</string>
+    <string name="tidak_ada_pending">Tidak ada data yang pending</string>
+
+<!--    Halaman Selesai-->
+    <string name="selesai">Selesai</string>
+</resources>
