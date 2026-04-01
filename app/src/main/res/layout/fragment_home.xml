@@ -227,17 +227,5 @@
                 android:textAlignment="center"/>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/cv_user"
-            android:background="@drawable/btn_linear_green"
-            android:text="@string/log_out"
-            android:textAllCaps="true"
-            android:layout_marginTop="20dp"
-            app:backgroundTint="@null"
-            android:layout_marginHorizontal="50dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

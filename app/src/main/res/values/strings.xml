@@ -65,4 +65,11 @@
 
 <!--    Halaman Selesai-->
     <string name="selesai">Selesai</string>
+
+<!--    Halaman Profil-->
+    <string name="profil">Profil</string>
+    <string name="profil_foto">Profile Foto</string>
+    <string name="nama">Nama</string>
+    <string name="nama_user">Nama User</string>
+    <string name="nama_role">Nama Role</string>
 </resources>

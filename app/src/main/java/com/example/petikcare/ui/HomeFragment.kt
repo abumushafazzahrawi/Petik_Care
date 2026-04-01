@@ -144,23 +144,7 @@ class HomeFragment : Fragment() {
 
         if (viewModel.complaints.value == null) {
             viewModel.getComplaints(requireContext())
-        }
 
-        binding.btnLogout.setOnClickListener {
-            sharedPref.edit {
-                // 1. Hapus data session
-                clear()
-            }
-
-            // 2. Pindah ke LoginActivity
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-
-            // 3. Clear stack activity agaruser tidak bisa 'Back'ke halaman ini lagi
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-            startActivity(intent)
-            requireActivity()
-                .finish()
         }
 
         binding.cvObat.setOnClickListener {
@@ -172,7 +156,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun logOut() {
+    fun logOut() {
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         sharedPref.edit {
             // 1. Hapus data session
