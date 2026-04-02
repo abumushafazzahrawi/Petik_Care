@@ -140,8 +140,6 @@ class HomeFragment : Fragment() {
         }
 
         //Get Data
-        viewModel.getComplaints(requireContext())
-
         if (viewModel.complaints.value == null) {
             viewModel.getComplaints(requireContext())
 
