@@ -52,20 +52,20 @@ class HomeFragment : Fragment() {
 
 
 
-        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
-            if (message != null) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
+            event?.getContentIfNotHandled()?.let { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
-                // Opsional jika errornya karena token exoired
-                if (message.contains("Sesi habis")) {
-                    viewModel.clearError()
-                    logOut()
-                } else {
-                    // Reset error di ViewModel agar tidak muncul berkali-kali saat rotasi layar
-                    viewModel.clearError()
+                    // Opsional jika errornya karena token exoired
+                    if (message.contains("Sesi habis")) {
+                        viewModel.clearError()
+                        logOut()
+                    } else {
+                        // Reset error di ViewModel agar tidak muncul berkali-kali saat rotasi layar
+                        viewModel.clearError()
+                    }
                 }
             }
-        }
 
         Log.d("HOME_DEBUG", "USERNAME: $name")
         Log.d("HOME_DEBUG", "ROLE: $role")

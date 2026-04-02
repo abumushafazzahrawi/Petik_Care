@@ -72,4 +72,5 @@
     <string name="nama">Nama</string>
     <string name="nama_user">Nama User</string>
     <string name="nama_role">Nama Role</string>
+    <string name="edit">Edit</string>
 </resources>

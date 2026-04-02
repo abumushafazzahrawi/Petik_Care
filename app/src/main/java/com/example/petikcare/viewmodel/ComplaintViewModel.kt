@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.petikcare.event.Event
 import com.example.petikcare.response_complaint.DataComplaints
 import com.example.petikcare.response_complaint.RespondRequest
 import com.example.petikcare.response_complaint.ResponseDetailComplaint
@@ -18,11 +19,11 @@ class ComplaintViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _errorMessage = MutableLiveData<String?>()
-    val errorMessage: LiveData<String?> = _errorMessage
+    private val _errorMessage = MutableLiveData<Event<String?>>()
+    val errorMessage: LiveData<Event<String?>> = _errorMessage
 
-    private val _responseComplaint = MutableLiveData<ResponseDetailComplaint?>()
-    val responseComplaint: LiveData<ResponseDetailComplaint?> = _responseComplaint
+    private val _responseComplaint = MutableLiveData<Event<ResponseDetailComplaint?>>()
+    val responseComplaint: LiveData<Event<ResponseDetailComplaint?>> = _responseComplaint
 
 
     fun getComplaints(context: Context, forceRefresh: Boolean = false) {
@@ -40,13 +41,13 @@ class ComplaintViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _complaints.value = response.body()?.data
                 } else if (response.code() == 401) {
-                    _errorMessage.value = "Sesi habis, silahkan login kembali"
+                    _errorMessage.value = Event("Sesi habis, silahkan login kembali")
                 } else {
-                    _errorMessage.value = "Gagal mengambil data: ${response.message()}"
+                    _errorMessage.value = Event("Gagal mengambil data: ${response.message()}")
                 }
             } catch (e: Exception) {
                 // error koneksi internet biasanya disini
-                _errorMessage.value = "Koneksi bermasalah: ${e.localizedMessage}"
+                _errorMessage.value = Event("Koneksi bermasalah: ${e.localizedMessage}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
@@ -63,12 +64,12 @@ class ComplaintViewModel : ViewModel() {
                 val response = ApiConfig.getApiService(context).respondComplaint(id, request)
 
                 if (response.isSuccessful) {
-                    _responseComplaint.value = response.body()
+                    _responseComplaint.value = Event(response.body())
                 } else {
-                    _errorMessage.value = "Gagal mengirim respon: ${response.message()}"
+                    _errorMessage.value = Event("Gagal mengirim respon: ${response.message()}")
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "Koneksi error: ${e.localizedMessage}"
+                _errorMessage.value = Event("Koneksi error: ${e.localizedMessage}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
@@ -95,12 +96,12 @@ class ComplaintViewModel : ViewModel() {
                 val response = ApiConfig.getApiService(context).getDetailComplaint(id)
 
                 if (response.isSuccessful) {
-                    _responseComplaint.value = response.body()
+                    _responseComplaint.value = Event(response.body())
                 } else {
-                    _errorMessage.value = "Gagal mengambil detail: ${response.message()}"
+                    _errorMessage.value = Event("Gagal mengambil detail: ${response.message()}")
                 }
             } catch (e: Exception) {
-                _errorMessage.value = "Koneksi error: ${e.localizedMessage}"
+                _errorMessage.value = Event("Koneksi error: ${e.localizedMessage}")
             } finally {
                 _isLoading.value = false
 

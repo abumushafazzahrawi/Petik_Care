@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.content.edit
 import com.example.petikcare.R
 import com.example.petikcare.databinding.FragmentProfilBinding
+import androidx.core.view.isGone
 
 class ProfilFragment : Fragment() {
     private var _binding: FragmentProfilBinding? = null
@@ -55,6 +56,20 @@ class ProfilFragment : Fragment() {
             requireActivity()
                 .finish()
 
+        }
+
+        binding.cvCardProfil.setOnClickListener {
+            binding.cvEditFoto.animate().apply {
+                duration = 200
+                if (binding.cvEditFoto.isGone) {
+                    binding.cvEditFoto.visibility = View.VISIBLE
+                    alpha(1f)
+                } else {
+                    alpha(0f).withEndAction {
+                        binding.cvEditFoto.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 }
