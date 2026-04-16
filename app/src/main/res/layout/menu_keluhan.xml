@@ -35,11 +35,22 @@
             android:textSize="15sp"/>
 
         <TextView
+            android:id="@+id/tv_deskripsi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="15sp"/>
+
+        <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins_medium"
             android:textSize="15sp"/>
 

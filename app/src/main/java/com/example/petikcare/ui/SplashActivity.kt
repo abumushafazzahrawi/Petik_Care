@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.petikcare.databinding.ActivitySplashBinding
@@ -32,17 +33,25 @@ class SplashActivity : AppCompatActivity() {
         val token = sharedPref.getString("ACCESS_TOKEN", null)
 
         android.util.Log.d("PETIK_CARE", "Token yang terbaca di Splash: $token")
-        if (token != null && token.isNotEmpty()) {
-            // Jika token ada (sudah login), langsung ke MainActivity
-            android.util.Log.d("PETIK_CARE", "Token ada, langsung ke MainActivity")
-            checkTokenServer(token)
+
+        if (!token.isNullOrEmpty()) {
+            if (isOnline()) {
+                // Jika token ada (sudah login), langsung ke MainActivity
+                android.util.Log.d("PETIK_CARE", "Token ada, langsung ke MainActivity")
+                checkTokenServer(token)
+
+            } else {
+                Toast.makeText(this, "Mode offline", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
         } else {
             // Jika token tidak ada (belum login), ke halaman login
             android.util.Log.d("PETIK_CARE", "Token tidak ada, ke halaman login")
             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
+            }
         }
-    }
 
     private fun checkTokenServer(token: String) {
         lifecycleScope.launch {
@@ -58,10 +67,19 @@ class SplashActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                goToLogin()
+                Toast.makeText(this@SplashActivity, "Mode offline", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                finish()
 
             }
         }
+    }
+
+    private fun isOnline(): Boolean {
+        val cm = getSystemService(CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+        val network = cm.activeNetwork ?: return false
+        val capabilities = cm.getNetworkCapabilities(network)?: return false
+        return  capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
 

@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_logo"
@@ -58,12 +58,13 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:gravity="center"
                 android:text="@string/sign_in"
-                android:textSize="40sp"
                 android:textColor="#0B705C"
+                android:textSize="40sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                tools:layout_editor_absoluteY="20dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_desc"
@@ -103,6 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email"
+                    android:inputType="textEmailAddress"
                     android:fontFamily="@font/poppins_medium"
                     android:textColor="#BEBEC2"/>
             
@@ -124,6 +126,8 @@
                 app:boxBackgroundColor="@color/white"
                 app:startIconDrawable="@drawable/logo_password"
                 app:startIconTint="#BEBEC2"
+                app:endIconMode="password_toggle"
+                app:endIconTint="#BEBEC2"
                 android:layout_marginHorizontal="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -133,6 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
+                    android:inputType="textPassword"
                     android:fontFamily="@font/poppins_medium"
                     android:textColor="#BEBEC2"/>
                 

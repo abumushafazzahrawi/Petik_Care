@@ -28,8 +28,8 @@
 
     <!--    Cardview Riwayat Keluhan-->
     <string name="riwayat_keluhan">Keluhan \n Riwayat Keluhan</string>
-    <string name="stok_obat">Obat\n Lihat Stok Obat</string>
-    <string name="kelola_user">User\n Kelola User</string>
+    <string name="lihat_stok_obat">Obat\n Lihat Stok Obat</string>
+    <string name="buat_keluhan">Santri\n Buat Keluhan</string>
 
 
     <!--    Halaman Detail Keluhan-->
@@ -37,6 +37,8 @@
     <string name="dibuat">🕒 Dibuat:</string>
     <string name="ditangani">🕒 Ditangani:</string>
     <string name="obat_diberikan">💊 Obat yang diberikan</string>
+    <string name="quantity">Quantity</string>
+    <string name="batalkan_penanganan">Batalkan Penanganan</string>
 
 
     <!--    Menu Bottom Navigation-->
@@ -51,26 +53,39 @@
 
     <!--    Halaman Keluhan-->
     <string name="keluhan_santri">Keluhan Santri</string>
-    <string name="pilih_obat">💊 Pilih Obat</string>
+    <string name="daftar_obat">💊 Daftar Obat</string>
     <string name="simpan">Simpan</string>
     <string name="catatan">📝Catatan</string>
     <string name="input_catatan">Masukkan catatan disini</string>
+    <string name="tambah_obat">+ Tambah Obat Lain</string>
+    <string name="qty">Qty</string>
 
     <!--    Halaman Riwayat Keluhan-->
     <string name="riwayat">Riwayat Keluhan</string>
 
-<!--    Halaman PendingFragment-->
+    <!--    Halaman PendingFragment-->
     <string name="pending">Pending</string>
     <string name="tidak_ada_pending">Tidak ada data yang pending</string>
 
-<!--    Halaman Selesai-->
+    <!--    Halaman Selesai-->
     <string name="selesai">Selesai</string>
 
-<!--    Halaman Profil-->
+    <!--    Halaman Profil-->
     <string name="profil">Profil</string>
     <string name="profil_foto">Profile Foto</string>
     <string name="nama">Nama</string>
     <string name="nama_user">Nama User</string>
     <string name="nama_role">Nama Role</string>
     <string name="edit">Edit</string>
+
+    <!--    Halaman Obat-->
+    <string name="obat">Obat</string>
+    <string name="nama_obat">💊 Nama Obat</string>
+    <string name="description">📝 Deskripsi</string>
+    <string name="stok_obat">📦 Stok Obat</string>
+    <string name="diupdate">🕒 Diupdate:</string>
+    <string name="sediaan">🧪 Sediaan</string>
+    <string name="buat_obat">Buat Obat</string>
+    <string name="edit_obat">Edit Obat</string>
+
 </resources>

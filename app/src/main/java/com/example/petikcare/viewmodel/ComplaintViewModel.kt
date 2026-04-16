@@ -5,75 +5,71 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.petikcare.data.local.entity.ComplaintEntity
+import com.example.petikcare.data.local.room.ComplaintDao
+import com.example.petikcare.data.remote.ComplaintRepository
+import com.example.petikcare.data.remote.Result
 import com.example.petikcare.event.Event
-import com.example.petikcare.response_complaint.DataComplaints
 import com.example.petikcare.response_complaint.RespondRequest
 import com.example.petikcare.response_complaint.ResponseDetailComplaint
 import com.example.retrofit.ApiConfig
+import com.example.retrofit.ApiService
 import kotlinx.coroutines.launch
 
-class ComplaintViewModel : ViewModel() {
-    private val _complaints = MutableLiveData<List<DataComplaints>>()
-    val complaints: LiveData<List<DataComplaints>> = _complaints
+class ComplaintViewModel(
+    private val repository: ComplaintRepository)
+    : ViewModel() {
+
+    val complaints: LiveData<List<ComplaintEntity>> = repository.getComplaints()
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _errorMessage = MutableLiveData<Event<String?>>()
-    val errorMessage: LiveData<Event<String?>> = _errorMessage
+    private val _errorMessage = MutableLiveData<Event<String?>?>()
+    val errorMessage: LiveData<Event<String?>?> = _errorMessage
 
-    private val _responseComplaint = MutableLiveData<Event<ResponseDetailComplaint?>>()
-    val responseComplaint: LiveData<Event<ResponseDetailComplaint?>> = _responseComplaint
+    private val _responseComplaint = MutableLiveData<Event<ResponseDetailComplaint?>?>()
+    val responseComplaint: LiveData<Event<ResponseDetailComplaint?>?> = _responseComplaint
 
+    fun refreshComplaints() {
+        viewModelScope.launch {
+            repository.refreshFromApi()
+        }
+    }
 
-    fun getComplaints(context: Context, forceRefresh: Boolean = false) {
-        // Jika data sudah ada bukan force refresh, jangan ambil lagi
-        if (_complaints.value != null && !forceRefresh) return // Biar gak reload
-        if (_isLoading.value == true) return
-
+    fun respondComplaint(id: String, request: RespondRequest) {
         _isLoading.value = true
-        _errorMessage.value = null
 
         viewModelScope.launch {
             try {
-                // Dari Login
-                val response = ApiConfig.getApiService(context).getAllComplaint()
+                val response = repository.complaintRespond(id, request)
                 if (response.isSuccessful) {
-                    _complaints.value = response.body()?.data
-                } else if (response.code() == 401) {
-                    _errorMessage.value = Event("Sesi habis, silahkan login kembali")
+                    repository.refreshFromApi()
+                    _responseComplaint.value = Event(response.body())
                 } else {
-                    _errorMessage.value = Event("Gagal mengambil data: ${response.message()}")
+                    _isLoading.value = false
                 }
             } catch (e: Exception) {
-                // error koneksi internet biasanya disini
-                _errorMessage.value = Event("Koneksi bermasalah: ${e.localizedMessage}")
-                e.printStackTrace()
-            } finally {
                 _isLoading.value = false
+                _errorMessage.value = Event("Error: ${e.message}")
             }
         }
     }
 
-    fun respondComplaint(id: String, request: RespondRequest, context: Context) {
+    fun revertComplaint(id: String) {
         _isLoading.value = true
-        _errorMessage.value = null
-
         viewModelScope.launch {
             try {
-                val response = ApiConfig.getApiService(context).respondComplaint(id, request)
-
+                val response = repository.revertComplaint(id)
                 if (response.isSuccessful) {
-                    _responseComplaint.value = Event(response.body())
-                } else {
-                    _errorMessage.value = Event("Gagal mengirim respon: ${response.message()}")
+                    _errorMessage.value = Event("Berhasil membatalkan")
+                    repository.refreshFromApi()
                 }
             } catch (e: Exception) {
-                _errorMessage.value = Event("Koneksi error: ${e.localizedMessage}")
-                e.printStackTrace()
+                _errorMessage.value = Event("Gagal: ${e.message}")
+
             } finally {
                 _isLoading.value = false
-
             }
         }
     }
@@ -85,27 +81,5 @@ class ComplaintViewModel : ViewModel() {
 
     fun clearResponse() {
         _responseComplaint.value = null
-    }
-
-    fun getDetailComplaint(id: String, context: Context) {
-        _isLoading.value = true
-        _errorMessage.value = null
-
-        viewModelScope.launch {
-            try {
-                val response = ApiConfig.getApiService(context).getDetailComplaint(id)
-
-                if (response.isSuccessful) {
-                    _responseComplaint.value = Event(response.body())
-                } else {
-                    _errorMessage.value = Event("Gagal mengambil detail: ${response.message()}")
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = Event("Koneksi error: ${e.localizedMessage}")
-            } finally {
-                _isLoading.value = false
-
-            }
-        }
     }
 }

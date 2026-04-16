@@ -5,15 +5,16 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
 import com.example.petikcare.response_complaint.DataComplaints
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class KeluhanAdapter(
-    var listKeluhan: List<DataComplaints>,
-    private val onPendingClick: (DataComplaints) -> Unit,
-    private val onDoneClick: (DataComplaints) -> Unit
+    var listKeluhan: List<ComplaintEntity>,
+    private val onPendingClick: (ComplaintEntity) -> Unit,
+    private val onDoneClick: (ComplaintEntity) -> Unit
 ): RecyclerView.Adapter<KeluhanAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: MenuKeluhanBinding) : RecyclerView.ViewHolder(binding.root)
@@ -28,9 +29,10 @@ class KeluhanAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val keluhan = listKeluhan[position]
-        holder.binding.tvNama.text = "\uD83D\uDC64 Nama: ${keluhan.santri.name}"
+        holder.binding.tvNama.text = "\uD83D\uDC64 Nama: ${keluhan.namaSantri}"
         holder.binding.tvKeluhan.text = "\uD83D\uDCCC Keluhan: ${keluhan.title}"
         holder.binding.tvDate.text = "\uD83D\uDD52 Dibuat: ${formatTanggal(keluhan.createdAt)}"
+        holder.binding.tvDeskripsi.text = "\uD83D\uDCDD Deskripsi: ${keluhan.description}"
         holder.binding.tvStatus.text = "Status: ${keluhan.status}"
         val status = keluhan.status
         when(status) {
@@ -53,7 +55,7 @@ class KeluhanAdapter(
     override fun getItemCount(): Int = listKeluhan.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<DataComplaints>) {
+    fun updateData(newData: List<ComplaintEntity>) {
         listKeluhan = newData
         notifyDataSetChanged()
     }

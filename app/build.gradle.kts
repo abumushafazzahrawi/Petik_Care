@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -61,5 +62,8 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.5")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
 }

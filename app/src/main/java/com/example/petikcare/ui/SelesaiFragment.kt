@@ -1,12 +1,12 @@
 package com.example.petikcare.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petikcare.R
@@ -29,6 +29,7 @@ class SelesaiFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -37,7 +38,7 @@ class SelesaiFragment : Fragment() {
             onPendingClick = {},
             onDoneClick = { keluhan ->
                 val bundle = Bundle().apply {
-                    putString("nama", keluhan.santri.name)
+                    putString("nama", keluhan.namaSantri)
                     putString("keluhan", keluhan.title)
                     putString("status", keluhan.status)
                     putString("date", keluhan.createdAt)
@@ -51,8 +52,17 @@ class SelesaiFragment : Fragment() {
         binding.rvRiwayat.adapter = adapter
 
         viewModel.complaints.observe(viewLifecycleOwner) { data ->
-            val selesai = data.filter { it.status == "SELESAI" } ?: emptyList()
+            val selesai = data?.filter { it.status == "SELESAI" } ?: emptyList()
             adapter.updateData(selesai)
+
+            if (selesai.isEmpty()) {
+                binding.tvSelesaiKosong.visibility = View.VISIBLE
+                binding.rvRiwayat.visibility = View.GONE
+                binding.tvSelesaiKosong.text = "Belum ada keluhan dengan status selesai"
+            } else {
+                binding.tvSelesaiKosong.visibility = View.GONE
+                binding.rvRiwayat.visibility = View.VISIBLE
+            }
         }
     }
 }

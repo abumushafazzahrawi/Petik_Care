@@ -23,5 +23,7 @@ data class DataComplaints(
     val handledAt: String?,
     val createdAt: String,
     val updatedAt: String,
-    val santri: Santri
+    val santri: Santri,
+    val treatment: TreatmentDetail?
 )
+

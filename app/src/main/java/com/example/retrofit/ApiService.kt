@@ -5,6 +5,9 @@ import com.example.petikcare.response_complaint.ResponseComplaints
 import com.example.petikcare.response_complaint.RespondRequest
 import com.example.petikcare.response_complaint.ResponseDetailComplaint
 import com.example.petikcare.response_complaint.RevertResponse
+import com.example.petikcare.response_obat.GeneralResponse
+import com.example.petikcare.response_obat.ObatRequest
+import com.example.petikcare.response_obat.ResponseGetObat
 import com.example.response_auth.LoginRequest
 import com.example.response_auth.RefreshRequest
 import com.example.response_auth.RefreshResponse
@@ -37,13 +40,17 @@ interface ApiService {
         @Body request: RespondRequest
     ): Response<ResponseDetailComplaint>
 
-    @POST("complaints/respond/{id}")
-    suspend fun getDetailComplaint(
-        @Path("id") id: String,
-    ): Response<ResponseDetailComplaint>
-
     @POST("complaints/revert/{id}")
     suspend fun revertComplaint(
         @Path("id") id: String
     ): Response<RevertResponse>
+
+    @GET("medicine/lookup")
+    suspend fun getAllObat(
+    ): Response<ResponseGetObat>
+
+    @POST("medicine/create")
+    suspend fun createObat(
+        @Body request: ObatRequest
+    ): Response<GeneralResponse>
 }

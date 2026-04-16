@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object ApiConfig {
     private const val BASE_URL = "https://syangkan.petik.or.id/api/"
@@ -17,6 +18,7 @@ object ApiConfig {
         val client = OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(context))
             .addInterceptor(logging)
+            .readTimeout(10, TimeUnit.SECONDS) //durasi maksimal menunggu 10 detik
             .build()
 
         val retrofit = Retrofit.Builder()

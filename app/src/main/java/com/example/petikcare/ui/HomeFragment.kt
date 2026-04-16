@@ -1,5 +1,6 @@
 package com.example.petikcare.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,22 +12,27 @@ import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petikcare.R
 import com.example.petikcare.adapter.KeluhanAdapter
+import com.example.petikcare.data.local.room.ComplaintDatabase
+import com.example.petikcare.data.remote.ComplaintRepository
 import com.example.petikcare.databinding.FragmentHomeBinding
+import com.example.petikcare.di.Injection
 import com.example.petikcare.viewmodel.ComplaintViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.example.petikcare.viewmodel.ViewModelFactory
+import com.example.retrofit.ApiConfig
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var keluhanAdapter: KeluhanAdapter
-    private val viewModel: ComplaintViewModel by viewModels()
+    private lateinit var viewModel: ComplaintViewModel
     private var isExpanded = false
+
 
     companion object {
         const val PREF_NAME = "petikCare"
@@ -41,16 +47,21 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val name = sharedPref.getString("USERNAME", null)
         val role = sharedPref.getString("ROLE", "User")
+        val repository = Injection.provideRepository(requireContext())
+        val factory = ViewModelFactory(repository)
+
+        viewModel = ViewModelProvider(this, factory)[ComplaintViewModel::class.java]
+        viewModel.refreshComplaints()
+
         binding.tvWelcomeUser.text = "Welcome ${name ?: "User"}"
         binding.tvRole.text = "Role: $role"
-
-
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
             event?.getContentIfNotHandled()?.let { message ->
@@ -80,11 +91,16 @@ class HomeFragment : Fragment() {
             }, onDoneClick = { keluhan ->
                 // 1. Buat bundle untuk membawa ID Keluhan
                 val bundle = Bundle().apply {
-                    putString("nama", keluhan.santri.name)
+                    putString("id", keluhan.id)
+                    putString("nama", keluhan.namaSantri)
                     putString("keluhan", keluhan.title)
                     putString("status", keluhan.status)
                     putString("date", keluhan.createdAt)
+                    putString("description", keluhan.description)
                     putString("handled_at", keluhan.handledAt)
+                    putString("catatan", keluhan.handledNote)
+                    putString("obat", keluhan.medicineName)
+                    putString("quantity", keluhan.medicineQuantity)
                 }
 
                 // 2. Gunakan findNavController untuk navigasi ke DetailKeluhanFragment
@@ -116,16 +132,13 @@ class HomeFragment : Fragment() {
         }
 
         binding.tvShowMore.setOnClickListener {
-            isExpanded = true
-
-            // Trigger ulang observer biar refresh
+            isExpanded = !isExpanded
 
             viewModel.complaints.value?.let { data ->
-                val sorted = data.sortedByDescending { it.createdAt } ?: emptyList()
+                val sorted = data.sortedByDescending { it.createdAt }
 
                 if (isExpanded) {
                     keluhanAdapter.updateData(sorted)
-
                     binding.tvShowMore.text = "Show Less"
                 } else {
                     keluhanAdapter.updateData(sorted.take(3))
@@ -140,11 +153,6 @@ class HomeFragment : Fragment() {
         }
 
         //Get Data
-        if (viewModel.complaints.value == null) {
-            viewModel.getComplaints(requireContext())
-
-        }
-
         binding.cvObat.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_obatFragment)
         }

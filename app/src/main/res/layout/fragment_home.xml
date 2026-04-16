@@ -189,7 +189,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/stok_obat"
+                android:text="@string/lihat_stok_obat"
                 android:layout_marginStart="20dp"
                 android:layout_gravity="center"
                 android:textColor="#1C594F"
@@ -210,16 +210,16 @@
             app:cardCornerRadius="15dp">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/ic_logo_kelola_user"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/logo_keluhan_santri"
                 android:padding="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/kelola_user"
+                android:text="@string/buat_keluhan"
                 android:layout_marginStart="20dp"
                 android:layout_gravity="center"
                 android:textColor="#1C594F"

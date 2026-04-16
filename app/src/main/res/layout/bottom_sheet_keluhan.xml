@@ -30,19 +30,28 @@
         android:layout_marginTop="10dp"/>
 
     <TextView
-        android:id="@+id/tv_pilih_obat"
+        android:id="@+id/tv_daftar_obat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_medium"
-        android:text="@string/pilih_obat"
+        android:text="@string/daftar_obat"
         android:layout_marginTop="10dp"/>
 
-    <Spinner
-        android:id="@+id/spinner_obat"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/container_obat"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"/>
+        android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btn_tambah_obat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:text="@string/tambah_obat"
+            android:fontFamily="@font/poppins_medium"/>
+
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
