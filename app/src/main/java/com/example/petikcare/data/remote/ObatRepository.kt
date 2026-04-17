@@ -5,7 +5,11 @@ import androidx.lifecycle.liveData
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.local.room.ObatDao
 import com.example.petikcare.response_obat.ObatRequest
+import com.example.petikcare.response_obat.ResponseEditObat
+import com.example.petikcare.response_obat.ResponseRestockObat
+import com.example.petikcare.response_obat.RestockObat
 import com.example.retrofit.ApiService
+import retrofit2.Response
 
 class ObatRepository(
     private val apiService: ApiService,
@@ -51,6 +55,11 @@ class ObatRepository(
     }
 
     suspend fun createObat(request: ObatRequest) = apiService.createObat(request)
+
+    suspend fun restockObat(id: String, stok: Int): Response<ResponseRestockObat> {
+        val request = RestockObat(stok)
+        return apiService.restockObat(id, request)
+    }
 
     companion object {
         @Volatile

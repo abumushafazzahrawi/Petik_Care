@@ -1,13 +1,16 @@
 package com.example.retrofit
 
-import com.example.petikcare.response_complaint.RespondResponse
 import com.example.petikcare.response_complaint.ResponseComplaints
 import com.example.petikcare.response_complaint.RespondRequest
 import com.example.petikcare.response_complaint.ResponseDetailComplaint
 import com.example.petikcare.response_complaint.RevertResponse
+import com.example.petikcare.response_obat.EditObat
 import com.example.petikcare.response_obat.GeneralResponse
 import com.example.petikcare.response_obat.ObatRequest
+import com.example.petikcare.response_obat.ResponseEditObat
 import com.example.petikcare.response_obat.ResponseGetObat
+import com.example.petikcare.response_obat.ResponseRestockObat
+import com.example.petikcare.response_obat.RestockObat
 import com.example.response_auth.LoginRequest
 import com.example.response_auth.RefreshRequest
 import com.example.response_auth.RefreshResponse
@@ -15,6 +18,7 @@ import com.example.response_auth.ResponseLogin
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -53,4 +57,16 @@ interface ApiService {
     suspend fun createObat(
         @Body request: ObatRequest
     ): Response<GeneralResponse>
+
+    @PATCH("medicine/restock/{id}")
+    suspend fun restockObat(
+        @Path("id") id: String?,
+        @Body request: RestockObat
+    ): Response<ResponseRestockObat>
+
+    @PATCH("medicine/edit/{id}")
+    suspend fun editObat(
+        @Path("id") id: String?,
+        @Body request: EditObat
+    ): Response<ResponseEditObat>
 }

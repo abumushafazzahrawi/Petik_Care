@@ -54,30 +54,44 @@
             android:fontFamily="@font/poppins_medium"
             android:text="@string/dibuat"/>
 
+        <TextView
+            android:id="@+id/tv_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/diupdate"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="@font/poppins_medium"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_diupdate"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_medium"
-                android:text="@string/diupdate"/>
-
-            <Button
-                android:id="@+id/btn_edit"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_obat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_linear_green"
-                app:backgroundTint="@null"
-                android:fontFamily="@font/poppins_medium"
                 android:text="@string/edit_obat"
-                android:layout_marginEnd="10dp"/>
-        </LinearLayout>
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/btn_linear_green"
+                app:backgroundTint="@null"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_restock_obat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:text="@string/restock_stok_obat"
+                android:backgroundTint="#FFA0BC"
+                app:cornerRadius="20dp"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp"
+                app:backgroundTint="@null"/>
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

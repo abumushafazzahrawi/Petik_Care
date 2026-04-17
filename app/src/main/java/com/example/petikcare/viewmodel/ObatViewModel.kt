@@ -1,7 +1,5 @@
 package com.example.petikcare.viewmodel
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,10 +8,8 @@ import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.remote.ObatRepository
 import com.example.petikcare.data.remote.Result
 import com.example.petikcare.event.Event
-import com.example.petikcare.response_obat.DataGetObat
 import com.example.petikcare.response_obat.ObatRequest
-import com.example.petikcare.response_obat.ResponseGetObat
-import com.example.retrofit.ApiConfig
+import com.example.petikcare.response_obat.ResponseRestockObat
 import kotlinx.coroutines.launch
 
 class ObatViewModel(val repository: ObatRepository) : ViewModel() {
@@ -26,7 +22,8 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-
+    private val _restockResult = MutableLiveData<Event<ResponseRestockObat>>()
+    val restockResult: LiveData<Event<ResponseRestockObat>> = _restockResult
 
     fun getAllObat() {
         _isLoading.value = true
@@ -72,6 +69,26 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
                 _errorMessage.value = "Error: ${e.message}"
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun restockObat(id: String, stok: Int) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val response = repository.restockObat(id, stok)
+                if (response.isSuccessful) {
+                    _restockResult.value = Event(response.body()!!)
+                    getAllObat()
+                } else {
+                    _errorMessage.value = Event("Gagal restock: ${response.message()}").toString()
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = Event("Error: ${e.message}").toString()
+            } finally {
+                _isLoading.postValue(false)
+
             }
         }
     }

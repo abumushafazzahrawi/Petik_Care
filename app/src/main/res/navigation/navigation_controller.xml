@@ -60,10 +60,19 @@
         android:id="@+id/obatFragment"
         android:name="com.example.petikcare.ui.ObatFragment"
         android:label="fragment_obat"
-        tools:layout="@layout/fragment_obat" />
+        tools:layout="@layout/fragment_obat" >
+        <action
+            android:id="@+id/action_obatFragment_to_restockObatFragment"
+            app:destination="@id/restockObatFragment" />
+    </fragment>
     <fragment
         android:id="@+id/riwayatKeluhanFragment"
         android:name="com.example.petikcare.ui.RiwayatKeluhanFragment"
         android:label="fragment_riwayat_keluhan"
         tools:layout="@layout/fragment_riwayat_keluhan" />
+    <fragment
+        android:id="@+id/restockObatFragment"
+        android:name="com.example.petikcare.ui.RestockObatFragment"
+        android:label="fragment_restock_obat"
+        tools:layout="@layout/fragment_restock_obat" />
 </navigation>

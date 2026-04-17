@@ -88,4 +88,9 @@
     <string name="buat_obat">Buat Obat</string>
     <string name="edit_obat">Edit Obat</string>
 
+    <!--    Halaman Restock Obat-->
+    <string name="restock_stok_obat">Restock Obat</string>
+    <string name="stok_sekarang">Stok Sekarang:</string>
+    <string name="input_stok_baru">Input stok baru</string>
+
 </resources>

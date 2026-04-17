@@ -1,12 +1,16 @@
 package com.example.petikcare.adapter
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.databinding.MenuObatBinding
 import com.example.petikcare.response_obat.DataGetObat
+import com.example.petikcare.ui.RestockObatFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -29,7 +33,7 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
         holder.binding.tvDeskripsi.text = "\uD83D\uDCDD Deskripsi: ${Obat.description}"
         holder.binding.tvStok.text = "\uD83D\uDCE6 Stok: ${Obat.stock}"
         holder.binding.tvDibuat.text = "\uD83D\uDD52 Dibuat: ${formatTanggal(Obat.createdAt)}"
-        holder.binding.tvDiupdate.text = "\uD83D\uDD52 Diupdate: ${formatTanggal(Obat.updatedAt)}"
+        holder.binding.tvUpdate.text = "\uD83D\uDD52 Diupdate: ${formatTanggal(Obat.updatedAt)}"
 
         val stok = Obat.stock
         if (stok < 5) {
@@ -39,7 +43,17 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
         } else {
             holder.binding.tvStok.setTextColor(holder.itemView.context.getColor(android.R.color.holo_green_light))
         }
+        holder.binding.btnRestockObat.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("id", Obat.id)
+                putString("nama", Obat.name)
+                putInt("stok", Obat.stock)
+            }
 
+            val navController = androidx.navigation.Navigation.findNavController(holder.itemView)
+            navController.navigate(R.id.action_obatFragment_to_restockObatFragment, bundle)
+
+        }
     }
 
     override fun getItemCount(): Int = listObat.size
