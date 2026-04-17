@@ -199,7 +199,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_user"
+            android:id="@+id/cv_buat_keluhan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="50dp"
@@ -210,8 +210,8 @@
             app:cardCornerRadius="15dp">
 
             <ImageView
-                android:layout_width="95dp"
-                android:layout_height="95dp"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
                 android:layout_marginStart="10dp"
                 android:src="@drawable/logo_keluhan_santri"
                 android:padding="10dp"/>

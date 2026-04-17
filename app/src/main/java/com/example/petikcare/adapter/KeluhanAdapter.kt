@@ -3,7 +3,9 @@ package com.example.petikcare.adapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
@@ -13,6 +15,7 @@ import java.util.Locale
 
 class KeluhanAdapter(
     var listKeluhan: List<ComplaintEntity>,
+    private val role: String,
     private val onPendingClick: (ComplaintEntity) -> Unit,
     private val onDoneClick: (ComplaintEntity) -> Unit
 ): RecyclerView.Adapter<KeluhanAdapter.ViewHolder>() {
@@ -43,13 +46,19 @@ class KeluhanAdapter(
         }
 
         holder.binding.btnDetail.setOnClickListener {
-            if (keluhan.status == "PENDING") {
-                onPendingClick(keluhan)
+            if (role == "pengasuhan") {
+
+                if (keluhan.status == "PENDING") {
+                    onPendingClick(keluhan)
+                } else {
+                    onDoneClick(keluhan)
+            }
             } else {
-                onDoneClick(keluhan)
+                Toast.makeText(holder.itemView.context, "Akses ditolak: hanya pengasuhan yang bisa melihat detail keluhan",
+                    Toast.LENGTH_SHORT).show()
             }
         }
-
+        holder.binding.btnDetail.visibility = if (role == "pengasuhan") View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int = listKeluhan.size

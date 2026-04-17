@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_homeFragment_to_riwayatKeluhanFragment"
             app:destination="@id/riwayatKeluhanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_buatKeluhanFragment"
+            app:destination="@id/buatKeluhanFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -64,6 +67,9 @@
         <action
             android:id="@+id/action_obatFragment_to_restockObatFragment"
             app:destination="@id/restockObatFragment" />
+        <action
+            android:id="@+id/action_obatFragment_to_editObatFragment"
+            app:destination="@id/editObatFragment" />
     </fragment>
     <fragment
         android:id="@+id/riwayatKeluhanFragment"
@@ -75,4 +81,14 @@
         android:name="com.example.petikcare.ui.RestockObatFragment"
         android:label="fragment_restock_obat"
         tools:layout="@layout/fragment_restock_obat" />
+    <fragment
+        android:id="@+id/editObatFragment"
+        android:name="com.example.petikcare.ui.EditObatFragment"
+        android:label="fragment_edit_obat"
+        tools:layout="@layout/fragment_edit_obat" />
+    <fragment
+        android:id="@+id/buatKeluhanFragment"
+        android:name="com.example.petikcare.ui.BuatKeluhanFragment"
+        android:label="fragment_buat_keluhan"
+        tools:layout="@layout/fragment_buat_keluhan" />
 </navigation>

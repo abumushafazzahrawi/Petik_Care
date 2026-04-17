@@ -1,6 +1,7 @@
 package com.example.petikcare.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petikcare.adapter.KeluhanAdapter
 import com.example.petikcare.databinding.FragmentPendingBinding
+import com.example.petikcare.ui.HomeFragment.Companion.PREF_NAME
 import com.example.petikcare.viewmodel.ComplaintViewModel
 
 class PendingFragment : Fragment() {
@@ -32,9 +34,15 @@ class PendingFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val name = sharedPref.getString("USERNAME", null)
+        val userRole = sharedPref.getString("ROLE", "santri")?: "santri"
+        val role = sharedPref.getString("ROLE", "User")
 
-        val adapter = KeluhanAdapter(listOf(),
-            onPendingClick = {keluhan ->
+        val adapter = KeluhanAdapter(
+            listOf(),
+            role = userRole,
+            onPendingClick = { keluhan ->
                 // Tampilkan bottomSheet
                 val bottomSheet = KeluhanBottomSheet(keluhan)
 

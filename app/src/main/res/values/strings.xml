@@ -93,4 +93,9 @@
     <string name="stok_sekarang">Stok Sekarang:</string>
     <string name="input_stok_baru">Input stok baru</string>
 
+    <!--    Halaman Edit Obat-->
+    <string name="masukkan_nama_baru">Masukkan nama obat terbaru</string>
+    <string name="contoh_paracetamol">Contoh Paracetamol</string>
+    <string name="masukkan_jenis">Masukkan jenis obat</string>
+
 </resources>

@@ -53,6 +53,7 @@ class HomeFragment : Fragment() {
 
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val name = sharedPref.getString("USERNAME", null)
+        val userRole = sharedPref.getString("ROLE", "santri")?: "santri"
         val role = sharedPref.getString("ROLE", "User")
         val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)
@@ -65,25 +66,28 @@ class HomeFragment : Fragment() {
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
             event?.getContentIfNotHandled()?.let { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
-                    // Opsional jika errornya karena token exoired
-                    if (message.contains("Sesi habis")) {
-                        viewModel.clearError()
-                        logOut()
-                    } else {
-                        // Reset error di ViewModel agar tidak muncul berkali-kali saat rotasi layar
-                        viewModel.clearError()
-                    }
+                // Opsional jika errornya karena token exoired
+                if (message.contains("Sesi habis")) {
+                    viewModel.clearError()
+                } else {
+                    // Reset error di ViewModel agar tidak muncul berkali-kali saat rotasi layar
+                    viewModel.clearError()
                 }
             }
+        }
+
+
 
         Log.d("HOME_DEBUG", "USERNAME: $name")
         Log.d("HOME_DEBUG", "ROLE: $role")
 
         //Setup RecyclerView
         keluhanAdapter = KeluhanAdapter(
-            listKeluhan = emptyList(), onPendingClick = { keluhan ->
+            listKeluhan = emptyList(),
+            role = userRole,
+            onPendingClick = { keluhan ->
                 // Tampilkan bottomSheet
                 val bottomSheet = KeluhanBottomSheet(keluhan)
 
@@ -154,30 +158,40 @@ class HomeFragment : Fragment() {
 
         //Get Data
         binding.cvObat.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_obatFragment)
+            if (role == "pengasuhan") {
+                findNavController().navigate(R.id.action_homeFragment_to_obatFragment)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         binding.cvRiwayatKeluhan.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_riwayatKeluhanFragment)
+            if (role == "pengasuhan") {
+                findNavController().navigate(R.id.action_homeFragment_to_riwayatKeluhanFragment)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
 
-    fun logOut() {
-        val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        sharedPref.edit {
-            // 1. Hapus data session
-            clear()
+        binding.cvBuatKeluhan.setOnClickListener {
+            if (role == "santri") {
+                findNavController().navigate(R.id.action_homeFragment_to_buatKeluhanFragment)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Akses ditolak: menu ini hanya bisa diakses oleh santri",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-
-        // 2. Pindah ke LoginActivity
-        val intent = Intent(requireContext(), LoginActivity::class.java)
-
-        // 3. Clear stack activity agaruser tidak bisa 'Back'ke halaman ini lagi
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-        startActivity(intent)
-        requireActivity()
-            .finish()
     }
 
     override fun onDestroyView() {

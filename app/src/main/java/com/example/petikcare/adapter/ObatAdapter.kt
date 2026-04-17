@@ -13,6 +13,7 @@ import com.example.petikcare.response_obat.DataGetObat
 import com.example.petikcare.ui.RestockObatFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.navigation.findNavController
 
 class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAdapter.ViewHolder>() {
 
@@ -38,7 +39,7 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
         val stok = Obat.stock
         if (stok < 5) {
             holder.binding.tvStok.setTextColor(holder.itemView.context.getColor(android.R.color.holo_red_light))
-        } else if (stok < 10){
+        } else if (stok < 10) {
             holder.binding.tvStok.setTextColor(holder.itemView.context.getColor(android.R.color.holo_orange_light))
         } else {
             holder.binding.tvStok.setTextColor(holder.itemView.context.getColor(android.R.color.holo_green_light))
@@ -50,8 +51,20 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
                 putInt("stok", Obat.stock)
             }
 
-            val navController = androidx.navigation.Navigation.findNavController(holder.itemView)
+            val navController =
+                holder.itemView.findNavController()
             navController.navigate(R.id.action_obatFragment_to_restockObatFragment, bundle)
+        }
+        holder.binding.btnEditObat.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("id", Obat.id)
+                putString("nama", Obat.name)
+                putString("sediaan", Obat.description)
+            }
+
+            val navController =
+                holder.itemView.findNavController()
+            navController.navigate(R.id.action_obatFragment_to_editObatFragment, bundle)
 
         }
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.local.room.ObatDao
+import com.example.petikcare.response_obat.EditObat
 import com.example.petikcare.response_obat.ObatRequest
 import com.example.petikcare.response_obat.ResponseEditObat
 import com.example.petikcare.response_obat.ResponseRestockObat
@@ -28,13 +29,15 @@ class ObatRepository(
             if (response.isSuccessful) {
                 val body = response.body()
                 val data = body?.data?.map { item ->
+                    val existingObat = obatDao.getObatByid(item.id)
                     ObatEntity(
                         id = item.id,
                         name = item.name,
                         description = item.description,
                         stock = item.stock,
                         createdAt = item.createdAt,
-                        updatedAt = item.updatedAt
+                        updatedAt = item.updatedAt,
+                        preparation = existingObat?.preparation
                     )
                 } ?: emptyList()
 
@@ -61,6 +64,26 @@ class ObatRepository(
         return apiService.restockObat(id, request)
     }
 
+    suspend fun editObat(id: String, request: EditObat): Response<ResponseEditObat> {
+        val response = apiService.editObat(id, request)
+        if (response.isSuccessful) {
+
+            val existing = obatDao.getObatByid(id)
+            if (existing != null) {
+                val updated = ObatEntity(
+                    id = existing.id,
+                    name = request.namaObat,
+                    description = existing.description,
+                    stock = existing.stock,
+                    createdAt = existing.createdAt,
+                    updatedAt = existing.updatedAt,
+                    preparation = existing.preparation
+                )
+                obatDao.insertObat(listOf(updated))
+            }
+        }
+        return response
+    }
     companion object {
         @Volatile
         private var instance: ObatRepository? = null

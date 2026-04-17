@@ -14,4 +14,7 @@ interface ObatDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertObat(obat: List<ObatEntity>)
+
+    @Query("SELECT * FROM obat WHERE id = :id")
+    suspend fun getObatByid(id: String): ObatEntity?
 }

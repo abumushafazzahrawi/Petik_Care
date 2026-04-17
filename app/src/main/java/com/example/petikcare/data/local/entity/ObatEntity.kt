@@ -23,6 +23,9 @@ class ObatEntity(
     val createdAt: String,
 
     @field:ColumnInfo(name = "updated_at")
-    val updatedAt: String
+    val updatedAt: String,
+
+    @field:ColumnInfo(name= "preparation")
+    val preparation: String? = null
 
 )

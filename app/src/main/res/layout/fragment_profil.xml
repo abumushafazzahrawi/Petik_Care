@@ -21,29 +21,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <ImageView
-        android:id="@+id/iv_arrow_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/ic_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tv_profil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_margin="50dp"
         android:text="@string/profile"
         android:layout_marginStart="20dp"
         android:fontFamily="@font/poppins_semibold"
         android:textSize="25sp"
         android:textColor="#53BF6C"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_arrow_back"
-        app:layout_constraintStart_toEndOf="@+id/iv_arrow_back"
-        app:layout_constraintTop_toTopOf="@+id/iv_arrow_back" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_card_profil"
