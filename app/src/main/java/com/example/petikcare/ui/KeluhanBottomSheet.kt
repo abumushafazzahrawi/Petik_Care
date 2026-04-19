@@ -1,5 +1,14 @@
 package com.example.petikcare.ui
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +17,13 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import com.example.petikcare.R
-import androidx.fragment.app.viewModels
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDeepLinkBuilder
+import androidx.navigation.fragment.findNavController
+import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.databinding.BottomSheetKeluhanBinding
@@ -23,9 +36,8 @@ import com.example.petikcare.viewmodel.ObatViewModel
 import com.example.petikcare.viewmodel.ObatViewModelFactory
 import com.example.petikcare.viewmodel.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlin.toString
 
-class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialogFragment() {
+class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDialogFragment() {
     private var _binding: BottomSheetKeluhanBinding? = null
     private val binding get() = _binding!!
 
@@ -34,6 +46,23 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialo
     private lateinit var viewModel: ComplaintViewModel
     private lateinit var obatViewModel: ObatViewModel
     val selectedMedicines = mutableListOf<View>()
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(requireContext(), "Notifikasi diizinkan", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Notifikasi tidak diizinkan", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    companion object {
+        private const val NOTIFICATION_ID = 1
+        private const val CHANNEL_ID = "channel_01"
+        private const val CHANNEL_NAME = "petik care"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +75,16 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Request permission notifikasi untuk Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        val title = requireContext().resources.getString(R.string.title)
+        val message = requireContext().resources.getString(R.string.message)
 
         // Set data dari klik
         binding.tvNama.text = "Nama: ${keluhan.namaSantri}"
@@ -61,9 +100,26 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialo
         obatViewModel = ViewModelProvider(this, obatFactory)[ObatViewModel::class.java]
 
         // Observe data complaint
-        viewModel.responseComplaint.observe(viewLifecycleOwner) { data ->
-            data?.let {
+        viewModel.responseComplaint.observe(viewLifecycleOwner) { event ->
+            event?.getContentIfNotHandled()?.let { response ->
+                
+                // Navigasi langsung ke DetailKeluhanFragment
+                val detailData = response.data
+                val bundle = Bundle().apply {
+                    putString("id", detailData.complaintId)
+                    putString("nama", keluhan.namaSantri)
+                    putString("keluhan", keluhan.title)
+                    putString("status", detailData.status)
+                    putString("handled_at", detailData.handledAt)
+                    putString("catatan", detailData.treatment.note)
+                    putString("obat", detailData.treatment.medicinesGiven.joinToString(", ") { it.name })
+                    putString("quantity", detailData.treatment.medicinesGiven.joinToString(", ") { it.quantity.toString() })
+                }
+
+                createNotification(title, message, bundle)
                 Toast.makeText(requireContext(), "Berhasil respond", Toast.LENGTH_SHORT).show()
+                
+                findNavController().navigate(R.id.detailKeluhanFragment, bundle)
                 dismiss()
                 viewModel.clearResponse()
             }
@@ -81,21 +137,18 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialo
 
         binding.btnTambahObat.setOnClickListener {
             tambahBarisObat()
-
         }
 
         binding.btnSimpan.setOnClickListener {
             val note = binding.etCatatan.text.toString()
 
             if (note.isEmpty()) {
-                Toast.makeText(requireContext(), "Data obat belun tersedia", Toast.LENGTH_SHORT)
-                    .show()
+                binding.tilCatatan.error = "Catatan tidak boleh kosong"
                 return@setOnClickListener
             }
 
             if (selectedMedicines.isEmpty()) {
-                Toast.makeText(requireContext(), "Harap tambah obat", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Harap tambah obat", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val request = buildRequest()
@@ -149,5 +202,37 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity): BottomSheetDialo
             catatan = binding.etCatatan.text.toString(),
             medicines = medicineList
         )
+    }
+
+    private fun createNotification(title: String, message: String, bundle: Bundle) {
+        val notificationManager = requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        
+        // Menggunakan MainActivity sebagai target Intent (Fragment tidak bisa langsung)
+        val intent = Intent(requireContext(), MainActivity::class.java)
+
+        val pendingIntent = NavDeepLinkBuilder(requireContext())
+            .setGraph(R.navigation.navigation_controller)
+            .setDestination(R.id.detailKeluhanFragment)
+            .setArguments(bundle)
+            .createPendingIntent()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+            .setSmallIcon(R.drawable.logo_mini_petik_care)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        notificationManager.notify(NOTIFICATION_ID, builder.build())
     }
 }

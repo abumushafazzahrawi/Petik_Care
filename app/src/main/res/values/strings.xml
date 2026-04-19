@@ -98,4 +98,8 @@
     <string name="contoh_paracetamol">Contoh Paracetamol</string>
     <string name="masukkan_jenis">Masukkan jenis obat</string>
 
+<!--    Notification-->
+    <string name="title">Keluhan selesai</string>
+    <string name="message">Silahkan cek detail untuk melihat respon</string>
+
 </resources>

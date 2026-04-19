@@ -1,15 +1,28 @@
 package com.example.petikcare.adapter
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
 import com.example.petikcare.response_complaint.DataComplaints
+import com.example.petikcare.ui.HomeFragment
+import com.example.petikcare.ui.MainActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -38,9 +51,10 @@ class KeluhanAdapter(
         holder.binding.tvDeskripsi.text = "\uD83D\uDCDD Deskripsi: ${keluhan.description}"
         holder.binding.tvStatus.text = "Status: ${keluhan.status}"
         val status = keluhan.status
-        when(status) {
+        when (status) {
             "PENDING" ->
                 holder.binding.tvStatus.setTextColor(Color.RED)
+
             "SELESAI" ->
                 holder.binding.tvStatus.setTextColor(Color.GREEN)
         }
@@ -52,10 +66,13 @@ class KeluhanAdapter(
                     onPendingClick(keluhan)
                 } else {
                     onDoneClick(keluhan)
-            }
+                }
             } else {
-                Toast.makeText(holder.itemView.context, "Akses ditolak: hanya pengasuhan yang bisa melihat detail keluhan",
-                    Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    holder.itemView.context,
+                    "Akses ditolak: hanya pengasuhan yang bisa melihat detail keluhan",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         holder.binding.btnDetail.visibility = if (role == "pengasuhan") View.VISIBLE else View.GONE

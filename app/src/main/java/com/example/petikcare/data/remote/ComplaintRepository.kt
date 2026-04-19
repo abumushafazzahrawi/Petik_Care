@@ -1,5 +1,7 @@
 package com.example.petikcare.data.remote
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +13,7 @@ import com.example.petikcare.response_complaint.RespondRequest
 import com.example.petikcare.response_complaint.ResponseComplaints
 import com.example.petikcare.response_complaint.ResponseDetailComplaint
 import com.example.petikcare.response_complaint.RevertResponse
+import com.example.petikcare.utils.NotificationHelper
 import com.example.retrofit.ApiService
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Exception
@@ -22,6 +25,7 @@ import retrofit2.Response
 class ComplaintRepository(
     private val apiService: ApiService,
     private val complaintDao: ComplaintDao,
+    private val context: Context
 ) {
 
     private val _isLoading = MutableLiveData<Boolean>()
@@ -46,6 +50,10 @@ class ComplaintRepository(
                     val complaints = responseData.map { item ->
                         val treatment = item.treatment
                         val medicines = treatment?.medicinesGiven
+                        val wasPending = currentLocalData.find { it.id == item.id }?.status == "PENDING"
+                        if (wasPending && item.status == "SELESAI") {
+                            NotificationHelper.showNotification(context, "Keluhan Selesai", "Keluhan Anda telah ditangani")
+                        }
 
                         // Cari apakah di database lokal sudah ada data obat untuk ID ini
                         val existing = currentLocalData.find { it.id == item.id }
@@ -73,7 +81,6 @@ class ComplaintRepository(
                         )
                     }
 
-                    complaintDao.deleteAllComplaints()
                     complaintDao.insertComplaints(complaints)
                 }
             } catch (e: Exception) {
@@ -153,14 +160,16 @@ class ComplaintRepository(
         }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         @Volatile
         private var instance: ComplaintRepository? = null
             fun getInstance(
                 apiService: ApiService,
                 dao: ComplaintDao,
+                context: Context
             ): ComplaintRepository =
                 instance ?: synchronized(this) {
-                    instance ?: ComplaintRepository(apiService, dao)
+                    instance ?: ComplaintRepository(apiService, dao, context)
                         .also { instance = it }
                 }
         }

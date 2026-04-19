@@ -18,6 +18,9 @@ import androidx.core.content.edit
 import com.example.petikcare.databinding.FragmentProfilBinding
 import androidx.core.view.isGone
 import android.Manifest
+import coil.decode.SvgDecoder
+import coil.load
+import com.example.petikcare.R
 
 class ProfilFragment : Fragment() {
     private var _binding: FragmentProfilBinding? = null
@@ -27,32 +30,32 @@ class ProfilFragment : Fragment() {
         const val PREF_NAME = "petikCare"
     }
 
-    private val galleryLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            uri?.let {
-                binding.ivProfil.setImageURI(it)
-            }
-        }
-
-    // 2. Minta izin ke user (RUNTIME PERMISSION)
-    private val requestCameraPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                openCamera()
-            } else {
-                Toast.makeText(requireContext(), "Izin Kamera ditolak", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-    // 4. Fungsi buka kamera
-    private val cameraLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val imageBitmap = result.data?.extras?.get("data") as Bitmap
-                // Tampilkan imagevIew
-                binding.ivProfil.setImageBitmap(imageBitmap)
-            }
-        }
+//    private val galleryLauncher =
+//        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+//            uri?.let {
+//                binding.ivProfil.setImageURI(it)
+//            }
+//        }
+//
+//    // 2. Minta izin ke user (RUNTIME PERMISSION)
+//    private val requestCameraPermission =
+//        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+//            if (isGranted) {
+//                openCamera()
+//            } else {
+//                Toast.makeText(requireContext(), "Izin Kamera ditolak", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//    // 4. Fungsi buka kamera
+//    private val cameraLauncher =
+//        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//            if (result.resultCode == RESULT_OK) {
+//                val imageBitmap = result.data?.extras?.get("data") as Bitmap
+//                // Tampilkan imagevIew
+//                binding.ivProfil.setImageBitmap(imageBitmap)
+//            }
+//        }
 
 
     override fun onCreateView(
@@ -68,6 +71,8 @@ class ProfilFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val username = sharedPref.getString("USERNAME", "user") ?: "user"
+        val avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=$username"
         val nama = sharedPref.getString("USERNAME", null)
         val role = sharedPref.getString("ROLE", "User")
 
@@ -92,61 +97,68 @@ class ProfilFragment : Fragment() {
 
         }
 
-        binding.cvCardProfil.setOnClickListener {
-            binding.cvEditFoto.animate().apply {
-                duration = 200
-                if (binding.cvEditFoto.isGone) {
-                    binding.cvEditFoto.visibility = View.VISIBLE
-                    alpha(1f)
-                } else {
-                    alpha(0f).withEndAction {
-                        binding.cvEditFoto.visibility = View.GONE
-                    }
-                }
-            }
+//        binding.cvCardProfil.setOnClickListener {
+//            binding.cvEditFoto.animate().apply {
+//                duration = 200
+//                if (binding.cvEditFoto.isGone) {
+//                    binding.cvEditFoto.visibility = View.VISIBLE
+//                    alpha(1f)
+//                } else {
+//                    alpha(0f).withEndAction {
+//                        binding.cvEditFoto.visibility = View.GONE
+//                    }
+//                }
+//            }
+//        }
+
+        binding.ivProfil.load(avatarUrl) {
+            decoderFactory { result, options, _ -> SvgDecoder(result.source, options) }
+            placeholder(R.drawable.ic_profile) // Gambar sementara
+            error(R.drawable.ic_profile) // Gambar jika error
         }
-
-        binding.cvEditFoto.setOnClickListener {
-            showImagePickerDialog()
-        }
-    }
-
-    private fun showImagePickerDialog() {
-        val options = arrayOf("Kamera", "Galeri")
-
-        android.app.AlertDialog.Builder(requireContext())
-            .setTitle("Pilih Foto")
-            .setItems(options) { _, which ->
-
-                when (which) {
-                    0 -> checkCameraPermissionAndOpen()
-                    1 -> openGallery()
-                }
-            }
-            .show()
-    }
-
-    private fun openGallery() {
-        galleryLauncher.launch("image/*")
-    }
-
-    // 3. Cek sebelum buka kamera
-    fun checkCameraPermissionAndOpen() {
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            openCamera()
-        } else {
-            requestCameraPermission.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-
-    private fun openCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraLauncher.launch(intent)
     }
 }
+
+//        binding.cvEditFoto.setOnClickListener {
+//            showImagePickerDialog()
+//        }
+//    }
+
+//    private fun showImagePickerDialog() {
+//        val options = arrayOf("Kamera", "Galeri")
+//
+//        android.app.AlertDialog.Builder(requireContext())
+//            .setTitle("Pilih Foto")
+//            .setItems(options) { _, which ->
+//
+//                when (which) {
+//                    0 -> checkCameraPermissionAndOpen()
+//                    1 -> openGallery()
+//                }
+//            }
+//            .show()
+//    }
+
+
+//    private fun openGallery() {
+//        galleryLauncher.launch("image/*")
+//    }
+//
+//    // 3. Cek sebelum buka kamera
+//    fun checkCameraPermissionAndOpen() {
+//        if (ContextCompat.checkSelfPermission(
+//                requireContext(),
+//                Manifest.permission.CAMERA
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            openCamera()
+//        } else {
+//            requestCameraPermission.launch(Manifest.permission.CAMERA)
+//        }
+//    }
+//
+//
+//    private fun openCamera() {
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        cameraLauncher.launch(intent)
 

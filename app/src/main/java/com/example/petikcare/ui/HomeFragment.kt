@@ -3,6 +3,7 @@ package com.example.petikcare.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.decode.SvgDecoder
+import coil.load
 import com.example.petikcare.R
 import com.example.petikcare.adapter.KeluhanAdapter
 import com.example.petikcare.data.local.room.ComplaintDatabase
@@ -45,16 +48,23 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+        }
+
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val name = sharedPref.getString("USERNAME", null)
         val userRole = sharedPref.getString("ROLE", "santri")?: "santri"
         val role = sharedPref.getString("ROLE", "User")
+        val username  = sharedPref.getString("USERNAME", "User") ?: "user"
+        val avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=$username"
         val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)
 
@@ -76,6 +86,12 @@ class HomeFragment : Fragment() {
                     viewModel.clearError()
                 }
             }
+        }
+
+        binding.ivProfil.load(avatarUrl) {
+            decoderFactory { result, options, _ -> SvgDecoder(result.source, options) }
+            placeholder(R.drawable.ic_profile) // Gambar sementara
+            error(R.drawable.ic_profile) // Gambar jika error
         }
 
 

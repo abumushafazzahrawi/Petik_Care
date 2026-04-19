@@ -44,7 +44,7 @@ class RiwayatKeluhanFragment : Fragment() {
 
         val db = ComplaintDatabase.getInstance(requireContext())
         val dao = db.complaintDao()
-        val repository = ComplaintRepository(ApiConfig.getApiService(requireContext()), dao)
+        val repository = ComplaintRepository(ApiConfig.getApiService(requireContext()), dao, requireContext())
         val factory = ViewModelFactory(repository)
         viewModel = ViewModelProvider(this,factory)[ComplaintViewModel::class.java]
 

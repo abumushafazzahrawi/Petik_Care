@@ -1,5 +1,6 @@
 package com.example.petikcare.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,6 +36,7 @@ class DetailKeluhanFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val repository = Injection.provideRepository(requireContext())
@@ -59,8 +61,8 @@ class DetailKeluhanFragment : Fragment() {
         binding.tvNama.text = "\uD83D\uDC64 Nama: $nama"
         binding.tvKeluhan.text = "\uD83D\uDCCC keluhan: $keluhan"
         binding.tvStatus.text = "Status: $status"
-        binding.tvNamaObat.text = "\uD83D\uDC8A Nama Obat: \n$obat"
-        binding.tvQuantity.text = "Quantity: \n$quantity"
+        binding.tvNamaObat.text = "\uD83D\uDC8A Nama Obat: \n${obat ?: "-"}"
+        binding.tvQuantity.text = "Quantity: \n${quantity ?: "-"}"
         binding.tvCatatan.text = "\uD83D\uDCDD Catatan: $catatan"
 
         binding.ivArrowBack.setOnClickListener {

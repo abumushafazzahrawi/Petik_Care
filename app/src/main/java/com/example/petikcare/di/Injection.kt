@@ -11,7 +11,7 @@ object Injection {
         val database = ComplaintDatabase.getInstance(context)
         val dao = database.complaintDao()
 
-        return ComplaintRepository.getInstance(apiService, dao)
+        return ComplaintRepository.getInstance(apiService, dao, context)
 
     }
 }
