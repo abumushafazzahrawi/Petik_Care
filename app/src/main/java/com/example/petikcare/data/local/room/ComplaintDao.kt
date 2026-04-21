@@ -31,4 +31,8 @@ interface ComplaintDao {
     @Query("DELETE FROM medicines")
     suspend fun deleteAllMedicines()
 
+    @Query("DELETE from complaints WHERE id = :id")
+    suspend fun deleteComplaintById(id: String)
+
+
 }

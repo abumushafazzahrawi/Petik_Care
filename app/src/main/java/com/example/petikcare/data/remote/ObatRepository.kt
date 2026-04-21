@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.local.room.ObatDao
-import com.example.petikcare.response_obat.EditObat
-import com.example.petikcare.response_obat.ObatRequest
-import com.example.petikcare.response_obat.ResponseEditObat
-import com.example.petikcare.response_obat.ResponseRestockObat
-import com.example.petikcare.response_obat.RestockObat
+import com.example.petikcare.pengasuhan.response_obat.EditObat
+import com.example.petikcare.pengasuhan.response_obat.ObatRequest
+import com.example.petikcare.pengasuhan.response_obat.ResponseEditObat
+import com.example.petikcare.pengasuhan.response_obat.ResponseRestockObat
+import com.example.petikcare.pengasuhan.response_obat.RestockObat
 import com.example.retrofit.ApiService
 import retrofit2.Response
 

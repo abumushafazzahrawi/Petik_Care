@@ -48,7 +48,8 @@ class PendingFragment : Fragment() {
 
                 bottomSheet.show(parentFragmentManager, "respond")
             },
-            onDoneClick = {}
+            onDoneClick = {},
+            onDeleteClick = {}
         )
         binding.rvRiwayat.layoutManager = LinearLayoutManager(requireContext())
         binding.rvRiwayat.adapter = adapter

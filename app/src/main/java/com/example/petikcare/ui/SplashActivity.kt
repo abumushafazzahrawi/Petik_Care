@@ -58,12 +58,18 @@ class SplashActivity : AppCompatActivity() {
             try {
                 val response = ApiConfig.getApiService(applicationContext).getAllComplaint()
 
-                if (response.isSuccessful) {
-                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                    finish()
-                } else {
-                    if (response.code() == 401) {
+                when (response.code()) {
+                    in 200..299,403 -> {
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                        finish()
+                    }
+                    401 -> {
                         goToLogin()
+                    }
+                    else -> {
+                        Toast.makeText(this@SplashActivity, "Mode offline", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                        finish()
                     }
                 }
             } catch (e: Exception) {

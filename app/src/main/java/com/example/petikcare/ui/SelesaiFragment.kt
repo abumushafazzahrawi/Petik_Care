@@ -1,12 +1,14 @@
 package com.example.petikcare.ui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,8 +52,14 @@ class SelesaiFragment : Fragment() {
                     putString("status", keluhan.status)
                     putString("date", keluhan.createdAt)
                     putString("handled_at", keluhan.handledAt)
+                    putString("catatan", keluhan.handledNote)
+                    putString("obat", keluhan.medicineName)
+                    putString("quantity", keluhan.medicineQuantity)
                 }
                 findNavController().navigate(R.id.detailKeluhanFragment, bundle)
+            },
+            onDeleteClick = {keluhan ->
+                showDeleteDialog(keluhan.id)
             }
         )
 
@@ -72,4 +80,24 @@ class SelesaiFragment : Fragment() {
             }
         }
     }
-}
+
+    fun showDeleteDialog(id: String) {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Hapus Keluhan")
+            setMessage("Apakah Anda yakin ingin menghapus keluhan ini?")
+            setPositiveButton("Ya") { _, _, ->
+                viewModel.deleteComplaintSantri(id)
+
+                viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
+                    event?.getContentIfNotHandled()?.let { msg ->
+                        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            setNegativeButton("Tidak") { dialog, _ ->
+                dialog.dismiss()
+            }
+            create().show()
+            }
+        }
+    }

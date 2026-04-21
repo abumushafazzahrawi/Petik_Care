@@ -1,4 +1,4 @@
-package com.example.petikcare.response_complaint
+package com.example.petikcare.pengasuhan.response_complaint
 
 import com.google.gson.annotations.SerializedName
 

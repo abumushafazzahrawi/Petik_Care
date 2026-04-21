@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_gradient"
+    tools:context=".ui.CreateComplaintSantriFragment">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_dashboard"/>
+
+    <ImageView
+        android:id="@+id/iv_arrow_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="40dp"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_buat_keluhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buat_keluhan_santri"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_arrow_back"
+        app:layout_constraintStart_toStartOf="@+id/iv_arrow_back"
+        android:layout_marginStart="40dp"
+        android:textSize="20sp"
+        android:textColor="#53BF6C"
+        android:fontFamily="@font/poppins_semibold"
+        app:layout_constraintTop_toTopOf="@+id/iv_arrow_back" />
+
+    <TextView
+        android:id="@+id/tv_keluhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/keluhan"
+        app:layout_constraintTop_toBottomOf="@id/iv_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="30dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="15sp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_keluhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_keluhan"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/white"
+        android:textColorHint="#808080"
+        android:hint="@string/masukkan_keluhan">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_keluhan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_keterangan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/keterangan"
+        app:layout_constraintTop_toBottomOf="@id/til_keluhan"
+        android:layout_margin="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:fontFamily="@font/poppins_semibold"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_keterangan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_keterangan"
+        android:layout_marginHorizontal="20dp"
+        android:background="@color/white"
+        android:textColorHint="#808080"
+        android:hint="@string/masukkan_keterangan">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_keterangan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_simpan_keluhan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/til_keterangan"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_linear_green"
+        app:backgroundTint="@null"
+        android:text="@string/simpan_keluhan"
+        android:textAllCaps="true"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

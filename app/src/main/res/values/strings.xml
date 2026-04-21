@@ -98,8 +98,22 @@
     <string name="contoh_paracetamol">Contoh Paracetamol</string>
     <string name="masukkan_jenis">Masukkan jenis obat</string>
 
-<!--    Notification-->
+    <!--    Notification-->
     <string name="title">Keluhan selesai</string>
     <string name="message">Silahkan cek detail untuk melihat respon</string>
+
+<!--    Halaman Cretae Keluhan Santri-->
+    <string name="buat_keluhan_santri">Buat Keluhan Santri</string>
+    <string name="masukkan_keluhan">Masukkan keluhan anda</string>
+    <string name="keterangan">📝 Keterangan</string>
+    <string name="masukkan_keterangan">Masukkan keterangan keluhan anda</string>
+    <string name="simpan_keluhan">Simpan Keluhan</string>
+    <string name="hapus_keluhan">Hapus keluhan</string>
+
+<!--    Menu lihat keluhan saya-->
+    <string name="lihat_keluhan">Lihat keluhan Saya</string>
+    <string name="pengasuhan">Pengasuhan</string>
+    <string name="santri">Santri</string>
+
 
 </resources>

@@ -20,8 +20,9 @@
             android:id="@+id/action_homeFragment_to_riwayatKeluhanFragment"
             app:destination="@id/riwayatKeluhanFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_buatKeluhanFragment"
-            app:destination="@id/buatKeluhanFragment" />
+            android:id="@+id/action_homeFragment_to_createComplaintSantriFragment"
+            app:destination="@id/createComplaintSantriFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -87,8 +88,8 @@
         android:label="fragment_edit_obat"
         tools:layout="@layout/fragment_edit_obat" />
     <fragment
-        android:id="@+id/buatKeluhanFragment"
-        android:name="com.example.petikcare.ui.BuatKeluhanFragment"
-        android:label="fragment_buat_keluhan"
-        tools:layout="@layout/fragment_buat_keluhan" />
+        android:id="@+id/createComplaintSantriFragment"
+        android:name="com.example.petikcare.ui.CreateComplaintSantriFragment"
+        android:label="fragment_create_complaint_santri"
+        tools:layout="@layout/fragment_create_complaint_santri" />
 </navigation>

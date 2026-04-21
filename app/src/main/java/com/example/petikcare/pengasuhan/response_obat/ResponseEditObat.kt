@@ -1,4 +1,4 @@
-package com.example.petikcare.response_obat
+package com.example.petikcare.pengasuhan.response_obat
 
 data class ResponseEditObat(
     val success: Boolean,

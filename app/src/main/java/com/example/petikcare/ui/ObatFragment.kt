@@ -1,6 +1,5 @@
 package com.example.petikcare.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petikcare.R
@@ -17,12 +15,11 @@ import com.example.petikcare.adapter.ObatAdapter
 import com.example.petikcare.data.local.room.ObatDatabase
 import com.example.petikcare.data.remote.ObatRepository
 import com.example.petikcare.databinding.FragmentObatBinding
-import com.example.petikcare.response_obat.ObatRequest
+import com.example.petikcare.pengasuhan.response_obat.ObatRequest
 import com.example.petikcare.viewmodel.ObatViewModel
 import com.example.petikcare.viewmodel.ObatViewModelFactory
 import com.example.retrofit.ApiConfig
 import com.google.android.material.textfield.TextInputEditText
-import kotlinx.coroutines.launch
 
 
 class ObatFragment : Fragment() {

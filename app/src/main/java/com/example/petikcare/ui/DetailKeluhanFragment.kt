@@ -63,7 +63,7 @@ class DetailKeluhanFragment : Fragment() {
         binding.tvStatus.text = "Status: $status"
         binding.tvNamaObat.text = "\uD83D\uDC8A Nama Obat: \n${obat ?: "-"}"
         binding.tvQuantity.text = "Quantity: \n${quantity ?: "-"}"
-        binding.tvCatatan.text = "\uD83D\uDCDD Catatan: $catatan"
+        binding.tvCatatan.text = "\uD83D\uDCDD Catatan: ${catatan ?: "-"}"
 
         binding.ivArrowBack.setOnClickListener {
             findNavController().navigateUp()

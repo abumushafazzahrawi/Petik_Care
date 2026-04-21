@@ -6,19 +6,20 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.petikcare.data.local.entity.ComplaintEntity
-import com.example.petikcare.data.local.entity.MedicineEntity
 import com.example.petikcare.data.local.room.ComplaintDao
-import com.example.petikcare.response_complaint.DataComplaints
-import com.example.petikcare.response_complaint.RespondRequest
-import com.example.petikcare.response_complaint.ResponseComplaints
-import com.example.petikcare.response_complaint.ResponseDetailComplaint
-import com.example.petikcare.response_complaint.RevertResponse
+import com.example.petikcare.pengasuhan.response_complaint.RespondRequest
+import com.example.petikcare.pengasuhan.response_complaint.ResponseDetailComplaint
+import com.example.petikcare.pengasuhan.response_complaint.RevertResponse
+import com.example.petikcare.santri.RequestCreateComplaints
+import com.example.petikcare.santri.ResponseComplaintsSantri
+import com.example.petikcare.santri.ResponseDeleteComplaintSantri
 import com.example.petikcare.utils.NotificationHelper
 import com.example.retrofit.ApiService
 import kotlinx.coroutines.CoroutineScope
 import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Dispatcher
 import retrofit2.Response
 
@@ -31,63 +32,53 @@ class ComplaintRepository(
     private val _isLoading = MutableLiveData<Boolean>()
 
     fun getComplaints(): LiveData<List<ComplaintEntity>> {
-        refreshFromApi()
         return complaintDao.getAllComplaints()
     }
 
-    fun refreshFromApi() {
-        CoroutineScope(Dispatchers.IO).launch {
-            _isLoading.postValue(true)
-            try {
-                val response = apiService.getAllComplaint()
-                if (response.isSuccessful) {
-                    val responseData = response.body()?.data ?: emptyList()
+    suspend fun refreshFromApi() = withContext(Dispatchers.IO) {
+        _isLoading.postValue(true)
+        try {
+            val response = apiService.getAllComplaint()
+            if (response.isSuccessful) {
+                val responseData = response.body()?.data ?: emptyList()
+                val currentLocalData = complaintDao.getAllComplaintsList()
 
-                    // Ambil data lokal saat ini sekali saja untuk pengecekan
-                    val currentLocalData =
-                        complaintDao.getAllComplaintsList() // Gunakan fungsi List biasa, bukan LiveData
+                val complaints = responseData.map { item ->
+                    val treatment = item.treatment
+                    val medicines = treatment?.medicinesGiven
 
-                    val complaints = responseData.map { item ->
-                        val treatment = item.treatment
-                        val medicines = treatment?.medicinesGiven
-                        val wasPending = currentLocalData.find { it.id == item.id }?.status == "PENDING"
-                        if (wasPending && item.status == "SELESAI") {
-                            NotificationHelper.showNotification(context, "Keluhan Selesai", "Keluhan Anda telah ditangani")
-                        }
+                    val existing = currentLocalData.find { it.id == item.id }
 
-                        // Cari apakah di database lokal sudah ada data obat untuk ID ini
-                        val existing = currentLocalData.find { it.id == item.id }
-
-                        val medicineNames = medicines?.joinToString(", ") { it.name }
-                            ?: existing?.medicineName // Jika API null, pakai yang sudah ada di lokal
-
-                        val medicineQuantities =
-                            medicines?.joinToString(", ") { it.quantity.toString() }
-                                ?: existing?.medicineQuantity // Jika API null, pakai yang sudah ada di lokal
-
-                        // RETURN entity agar masuk ke list 'complaints'
-                        ComplaintEntity(
-                            id = item.id,
-                            namaSantri = item.santri.name,
-                            title = item.title,
-                            description = item.description,
-                            status = item.status,
-                            createdAt = item.createdAt,
-                            handledNote = treatment?.note ?: existing?.handledNote
-                            ?: item.handledNote,
-                            handledAt = item.handledAt ?: existing?.handledAt,
-                            medicineName = medicineNames,
-                            medicineQuantity = medicineQuantities
-                        )
+                    // Notifikasi jika status berubah dari PENDING ke SELESAI
+                    if (existing?.status == "PENDING" && item.status == "SELESAI") {
+                        NotificationHelper.showNotification(context, "Keluhan Selesai", "Keluhan Anda telah ditangani")
                     }
 
-                    complaintDao.insertComplaints(complaints)
+                    val medicineNames = medicines?.joinToString(", ") { it.name }
+                        ?: existing?.medicineName
+
+                    val medicineQuantities = medicines?.joinToString(", ") { it.quantity.toString() }
+                        ?: existing?.medicineQuantity
+
+                    ComplaintEntity(
+                        id = item.id,
+                        namaSantri = item.santri.name,
+                        title = item.title,
+                        description = item.description,
+                        status = item.status,
+                        createdAt = item.createdAt,
+                        handledNote = treatment?.note ?: existing?.handledNote ?: item.handledNote,
+                        handledAt = item.handledAt ?: existing?.handledAt,
+                        medicineName = medicineNames,
+                        medicineQuantity = medicineQuantities
+                    )
                 }
-            } catch (e: Exception) {
-                Log.e("REPO_DEBUG", "Error refresh: ${e.message}")
-            } finally {
-                _isLoading.postValue(false)
+                complaintDao.insertComplaints(complaints)
             }
+        } catch (e: Exception) {
+            Log.e("REPO_DEBUG", "Error refresh: ${e.message}")
+        } finally {
+            _isLoading.postValue(false)
         }
     }
 
@@ -102,14 +93,12 @@ class ComplaintRepository(
             if (data != null) {
                 val treatment = data.treatment
                 val medicines = treatment.medicinesGiven
-
                 val medicineNames = medicines.joinToString(", ") { it.name }
                 val medicineQuantities = medicines.joinToString(", ") { it.quantity.toString() }
 
-                // Langsung update database lokal agar tidak perlu nunggu refresh API
-                CoroutineScope(Dispatchers.IO).launch {
-                    val existing =
-                        complaintDao.getComplaintById(id) // Pastikan fungsi ini ada di Dao
+                // Gunakan withContext agar update DB ditunggu sampai selesai sebelum return
+                withContext(Dispatchers.IO) {
+                    val existing = complaintDao.getComplaintById(id)
                     if (existing != null) {
                         val updated = ComplaintEntity(
                             id = existing.id,
@@ -129,48 +118,84 @@ class ComplaintRepository(
             }
         }
         return response
-
     }
+
     suspend fun revertComplaint(id: String): Response<RevertResponse> {
         val response = apiService.revertComplaint(id)
-
-            if (response.isSuccessful) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val existing = complaintDao.getComplaintById(id)
-                    if (existing != null) {
-                        val updated = ComplaintEntity(
-                            id = existing.id,
-                            namaSantri = existing.namaSantri,
-                            title = existing.title,
-                            description = existing.description,
-                            status = "PENDING",
-                            createdAt = existing.createdAt,
-                            handledNote = null,
-                            handledAt = null,
-                            medicineName = null,
-                            medicineQuantity = null
-                        )
-                        complaintDao.insertComplaints(listOf(updated))
-                    }
-
+        if (response.isSuccessful) {
+            withContext(Dispatchers.IO) {
+                val existing = complaintDao.getComplaintById(id)
+                if (existing != null) {
+                    val updated = ComplaintEntity(
+                        id = existing.id,
+                        namaSantri = existing.namaSantri,
+                        title = existing.title,
+                        description = existing.description,
+                        status = "PENDING",
+                        createdAt = existing.createdAt,
+                        handledNote = null,
+                        handledAt = null,
+                        medicineName = null,
+                        medicineQuantity = null
+                    )
+                    complaintDao.insertComplaints(listOf(updated))
                 }
             }
-
-        return response
         }
+        return response
+    }
+
+    suspend fun createComplaintSantri(request: RequestCreateComplaints): Response<ResponseComplaintsSantri> {
+        val response = apiService.createComplaints(request)
+        if (response.isSuccessful) {
+            val item = response.body()?.data
+            if (item != null) {
+                val sharedPref = context.getSharedPreferences("petikCare", Context.MODE_PRIVATE)
+                val username = sharedPref.getString("USERNAME", "Saya") ?: "Saya"
+                withContext(Dispatchers.IO) {
+                    val newComplaint = ComplaintEntity(
+                        id = item.id,
+                        namaSantri = username,
+                        title = item.title,
+                        description = item.description,
+                        status = item.status,
+                        createdAt = item.createdAt,
+                        handledNote = null,
+                        handledAt = null,
+                        medicineName = null,
+                        medicineQuantity = null
+                    )
+                    complaintDao.insertComplaints(listOf(newComplaint))
+                }
+            }
+        }
+        return response
+    }
+
+    suspend fun deleteComplaintSantri(id: String): Response<ResponseDeleteComplaintSantri> {
+        val response = apiService.deleteComplaints(id)
+        if (response.isSuccessful) {
+            withContext(Dispatchers.IO) {
+                complaintDao.deleteComplaintById(id)
+            }
+        } else {
+            complaintDao.deleteComplaintById(id)
+        }
+        return response
+    }
 
     companion object {
         @SuppressLint("StaticFieldLeak")
         @Volatile
         private var instance: ComplaintRepository? = null
-            fun getInstance(
-                apiService: ApiService,
-                dao: ComplaintDao,
-                context: Context
-            ): ComplaintRepository =
-                instance ?: synchronized(this) {
-                    instance ?: ComplaintRepository(apiService, dao, context)
-                        .also { instance = it }
-                }
-        }
+        fun getInstance(
+            apiService: ApiService,
+            dao: ComplaintDao,
+            context: Context
+        ): ComplaintRepository =
+            instance ?: synchronized(this) {
+                instance ?: ComplaintRepository(apiService, dao, context)
+                    .also { instance = it }
+            }
+    }
 }

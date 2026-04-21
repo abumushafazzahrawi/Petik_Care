@@ -1,6 +1,7 @@
 package com.example.petikcare.ui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -61,10 +62,10 @@ class HomeFragment : Fragment() {
 
         val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val name = sharedPref.getString("USERNAME", null)
-        val userRole = sharedPref.getString("ROLE", "santri")?: "santri"
-        val role = sharedPref.getString("ROLE", "User")
+        val role = sharedPref.getString("ROLE", "santri") ?: "santri"
         val username  = sharedPref.getString("USERNAME", "User") ?: "user"
         val avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=$username"
+
         val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)
 
@@ -74,13 +75,29 @@ class HomeFragment : Fragment() {
         binding.tvWelcomeUser.text = "Welcome ${name ?: "User"}"
         binding.tvRole.text = "Role: $role"
 
+        if (role.equals("pengasuhan", ignoreCase = true)) {
+            binding.tvPengasuhan.visibility = View.VISIBLE
+            binding.tvSantri.visibility = View.GONE
+            binding.cvRiwayatKeluhan.visibility = View.VISIBLE
+            binding.cvObat.visibility = View.VISIBLE
+            binding.cvBuatKeluhan.visibility = View.GONE
+            binding.cvLihatKeluhanSaya.visibility = View.GONE
+        } else {
+            binding.tvSantri.visibility = View.VISIBLE
+            binding.tvPengasuhan.visibility = View.GONE
+            binding.cvBuatKeluhan.visibility = View.VISIBLE
+            binding.cvLihatKeluhanSaya.visibility = View.VISIBLE
+            binding.cvRiwayatKeluhan.visibility = View.GONE
+            binding.cvObat.visibility = View.GONE
+        }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
             event?.getContentIfNotHandled()?.let { message ->
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
                 // Opsional jika errornya karena token exoired
-                if (message.contains("Sesi habis")) {
-                    viewModel.clearError()
+                if (message.contains("Sesi habis", ignoreCase = true)) {
+                    logOut()
                 } else {
                     // Reset error di ViewModel agar tidak muncul berkali-kali saat rotasi layar
                     viewModel.clearError()
@@ -102,7 +119,7 @@ class HomeFragment : Fragment() {
         //Setup RecyclerView
         keluhanAdapter = KeluhanAdapter(
             listKeluhan = emptyList(),
-            role = userRole,
+            role = role,
             onPendingClick = { keluhan ->
                 // Tampilkan bottomSheet
                 val bottomSheet = KeluhanBottomSheet(keluhan)
@@ -126,7 +143,10 @@ class HomeFragment : Fragment() {
                 // 2. Gunakan findNavController untuk navigasi ke DetailKeluhanFragment
                 findNavController().navigate(R.id.detailKeluhanFragment, bundle)
 
-            })
+            }, onDeleteClick = { keluhan ->
+                showDeleteDialog(keluhan.id)
+            }
+        )
         binding.rvkeluhan.layoutManager = LinearLayoutManager(requireContext())
         binding.rvkeluhan.adapter = keluhanAdapter
 
@@ -174,41 +194,70 @@ class HomeFragment : Fragment() {
 
         //Get Data
         binding.cvObat.setOnClickListener {
-            if (role == "pengasuhan") {
+            if (role.equals("pengasuhan", ignoreCase = true)) {
                 findNavController().navigate(R.id.action_homeFragment_to_obatFragment)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showAccessDeniedSnackbar("Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan")
             }
         }
 
         binding.cvRiwayatKeluhan.setOnClickListener {
-            if (role == "pengasuhan") {
+            if (role.equals("pengasuhan", ignoreCase = true)) {
                 findNavController().navigate(R.id.action_homeFragment_to_riwayatKeluhanFragment)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showAccessDeniedSnackbar("Akses ditolak: menu ini hanya bisa diakses oleh pengasuhan")
             }
         }
 
         binding.cvBuatKeluhan.setOnClickListener {
-            if (role == "santri") {
-                findNavController().navigate(R.id.action_homeFragment_to_buatKeluhanFragment)
+            if (role.equals("santri", ignoreCase = true)) {
+                findNavController().navigate(R.id.action_homeFragment_to_createComplaintSantriFragment)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Akses ditolak: menu ini hanya bisa diakses oleh santri",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showAccessDeniedSnackbar("Akses ditolak: menu ini hanya bisa diakses oleh santri")
+            }
+        }
+
+        viewModel.message.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { msg ->
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+    private fun showAccessDeniedSnackbar(message: String) {
+        com.google.android.material.snackbar.Snackbar.make(
+            binding.root,
+            message,
+            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun logOut() {
+        val sharedPref = requireContext().getSharedPreferences(ProfilFragment.PREF_NAME, Context.MODE_PRIVATE)
+        sharedPref.edit {
+            clear()
+        }
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        startActivity(intent)
+        requireActivity()
+            .finish()
+    }
+
+    fun showDeleteDialog(id: String) {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Hapus Keluhan")
+            setMessage("Apakah Anda yakin ingin menghapus keluhan ini?")
+            setPositiveButton("Ya") { _, _ ->
+                viewModel.deleteComplaintSantri(id)
+
+            }
+            setNegativeButton("Tidak", null)
+            show()
+            }
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()

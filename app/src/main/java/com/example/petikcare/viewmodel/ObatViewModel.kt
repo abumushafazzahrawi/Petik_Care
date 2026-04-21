@@ -8,10 +8,10 @@ import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.remote.ObatRepository
 import com.example.petikcare.data.remote.Result
 import com.example.petikcare.event.Event
-import com.example.petikcare.response_obat.EditObat
-import com.example.petikcare.response_obat.ObatRequest
-import com.example.petikcare.response_obat.ResponseEditObat
-import com.example.petikcare.response_obat.ResponseRestockObat
+import com.example.petikcare.pengasuhan.response_obat.EditObat
+import com.example.petikcare.pengasuhan.response_obat.ObatRequest
+import com.example.petikcare.pengasuhan.response_obat.ResponseEditObat
+import com.example.petikcare.pengasuhan.response_obat.ResponseRestockObat
 import kotlinx.coroutines.launch
 
 class ObatViewModel(val repository: ObatRepository) : ViewModel() {

@@ -1,7 +1,6 @@
 package com.example.petikcare.adapter
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.databinding.MenuObatBinding
-import com.example.petikcare.response_obat.DataGetObat
-import com.example.petikcare.ui.RestockObatFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.navigation.findNavController

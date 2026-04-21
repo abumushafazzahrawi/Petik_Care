@@ -1,28 +1,14 @@
 package com.example.petikcare.adapter
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
-import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
-import com.example.petikcare.response_complaint.DataComplaints
-import com.example.petikcare.ui.HomeFragment
-import com.example.petikcare.ui.MainActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -30,7 +16,8 @@ class KeluhanAdapter(
     var listKeluhan: List<ComplaintEntity>,
     private val role: String,
     private val onPendingClick: (ComplaintEntity) -> Unit,
-    private val onDoneClick: (ComplaintEntity) -> Unit
+    private val onDoneClick: (ComplaintEntity) -> Unit,
+    private val onDeleteClick: (ComplaintEntity) -> Unit
 ): RecyclerView.Adapter<KeluhanAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: MenuKeluhanBinding) : RecyclerView.ViewHolder(binding.root)
@@ -43,6 +30,7 @@ class KeluhanAdapter(
         return ViewHolder(binding)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val keluhan = listKeluhan[position]
         holder.binding.tvNama.text = "\uD83D\uDC64 Nama: ${keluhan.namaSantri}"
@@ -66,6 +54,7 @@ class KeluhanAdapter(
                     onPendingClick(keluhan)
                 } else {
                     onDoneClick(keluhan)
+
                 }
             } else {
                 Toast.makeText(
@@ -75,7 +64,23 @@ class KeluhanAdapter(
                 ).show()
             }
         }
-        holder.binding.btnDetail.visibility = if (role == "pengasuhan") View.VISIBLE else View.GONE
+        holder.binding.btnDetail.visibility =
+            if (role.equals("pengasuhan", ignoreCase = true)) View.VISIBLE else View.GONE
+        holder.binding.btnDelete.visibility =
+            if (role.equals("santri", ignoreCase = true)) View.VISIBLE else View.GONE
+
+        val isSantri = role.equals("santri", ignoreCase = true)
+        val isPending = keluhan.status.equals("PENDING", ignoreCase = true)
+
+        if (isSantri && isPending) {
+            holder.binding.btnDelete.visibility = View.VISIBLE
+        } else {
+            holder.binding.btnDelete.visibility = View.GONE
+        }
+        holder.binding.btnDelete.setOnClickListener {
+            onDeleteClick(keluhan)
+        }
+        true
     }
 
     override fun getItemCount(): Int = listKeluhan.size

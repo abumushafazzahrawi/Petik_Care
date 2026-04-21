@@ -138,22 +138,32 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_pengasuhan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pengasuhan"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            app:layout_constraintTop_toBottomOf="@id/linear"
+            android:fontFamily="@font/poppins_semibold"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_riwayat_keluhan"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cv_obat"
+            app:layout_constraintHorizontal_weight="1"
             android:backgroundTint="@color/white"
             app:cardCornerRadius="15dp"
             app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/linear"
-            tools:layout_editor_absoluteX="50dp">
+            app:layout_constraintTop_toBottomOf="@id/tv_pengasuhan">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:padding="10dp"
                 android:src="@drawable/ic_logo_riwayat_keluhan" />
 
@@ -171,61 +181,105 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_obat"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
             app:cardElevation="4dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/cv_riwayat_keluhan"
-            app:cardCornerRadius="15dp">
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_riwayat_keluhan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_riwayat_keluhan"
+            app:layout_constraintTop_toTopOf="@id/cv_riwayat_keluhan">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/ic_logo_stok_obat"
-                android:padding="10dp"/>
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_logo_stok_obat" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lihat_stok_obat"
-                android:layout_marginStart="20dp"
                 android:layout_gravity="center"
-                android:textColor="#1C594F"
+                android:layout_marginStart="20dp"
                 android:fontFamily="@font/poppins_semibold"
-                android:textAlignment="center"/>
+                android:text="@string/lihat_stok_obat"
+                android:textAlignment="center"
+                android:textColor="#1C594F" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_santri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/santri"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/cv_riwayat_keluhan"
+            android:fontFamily="@font/poppins_semibold"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_buat_keluhan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cv_lihat_keluhan_saya"
+            app:layout_constraintHorizontal_weight="1"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_santri">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:src="@drawable/logo_keluhan_santri_new" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="@string/buat_keluhan"
+                android:textAlignment="center"
+                android:textColor="#1C594F" />
 
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_buat_keluhan"
-            android:layout_width="match_parent"
+            android:id="@+id/cv_lihat_keluhan_saya"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="50dp"
+            android:layout_margin="8dp"
             android:backgroundTint="@color/white"
+            app:layout_constraintHorizontal_weight="1"
+            app:cardCornerRadius="15dp"
             app:cardElevation="4dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/cv_obat"
-            app:cardCornerRadius="15dp">
+            app:layout_constraintBottom_toBottomOf="@+id/cv_buat_keluhan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_buat_keluhan"
+            app:layout_constraintTop_toTopOf="@id/cv_buat_keluhan">
 
             <ImageView
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/logo_keluhan_santri"
-                android:padding="10dp"/>
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_logo_stok_obat" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/buat_keluhan"
-                android:layout_marginStart="20dp"
                 android:layout_gravity="center"
-                android:textColor="#1C594F"
+                android:layout_marginStart="20dp"
                 android:fontFamily="@font/poppins_semibold"
-                android:textAlignment="center"/>
+                android:text="@string/lihat_stok_obat"
+                android:textAlignment="center"
+                android:textColor="#1C594F" />
 
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
