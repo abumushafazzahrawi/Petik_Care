@@ -9,6 +9,7 @@ import com.example.petikcare.data.remote.ComplaintRepository
 import com.example.petikcare.event.Event
 import com.example.petikcare.pengasuhan.response_complaint.RespondRequest
 import com.example.petikcare.pengasuhan.response_complaint.ResponseDetailComplaint
+import com.example.petikcare.pengasuhan.response_complaint.ResponseGetMyComplaints
 import com.example.petikcare.santri.RequestCreateComplaints
 import com.example.petikcare.santri.ResponseComplaintsSantri
 import kotlinx.coroutines.launch
@@ -30,6 +31,9 @@ class ComplaintViewModel(
 
     private val _createComplaintSantri = MutableLiveData<ResponseComplaintsSantri>()
     val createComplaintSantri: LiveData<ResponseComplaintsSantri> = _createComplaintSantri
+
+    private val _getMyComplaintSantri = MutableLiveData<ResponseGetMyComplaints>()
+    val getMyComplaintSantri: LiveData<ResponseGetMyComplaints> = _getMyComplaintSantri
 
     private val _responseComplaint = MutableLiveData<Event<ResponseDetailComplaint?>?>()
     val responseComplaint: LiveData<Event<ResponseDetailComplaint?>?> = _responseComplaint
@@ -115,6 +119,26 @@ class ComplaintViewModel(
                 }
             } catch (e: Exception) {
                 _errorMessage.value = Event("Gagal: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
+            }
+        }
+    }
+
+    fun getMyComplaint() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val response = repository.getMyComplaint()
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    if (result != null) {
+                        _message.value = Event("Keluhan berhasil diambil")
+                        _getMyComplaintSantri.value = result
+                    }
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = Event("Gagal ${e.message}")
             } finally {
                 _isLoading.postValue(false)
             }

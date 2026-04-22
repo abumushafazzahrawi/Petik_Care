@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,22 +14,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.decode.SvgDecoder
 import coil.load
 import com.example.petikcare.R
 import com.example.petikcare.adapter.KeluhanAdapter
-import com.example.petikcare.data.local.room.ComplaintDatabase
-import com.example.petikcare.data.remote.ComplaintRepository
 import com.example.petikcare.databinding.FragmentHomeBinding
 import com.example.petikcare.di.Injection
 import com.example.petikcare.viewmodel.ComplaintViewModel
 import com.example.petikcare.viewmodel.ViewModelFactory
-import com.example.retrofit.ApiConfig
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -65,6 +61,73 @@ class HomeFragment : Fragment() {
         val role = sharedPref.getString("ROLE", "santri") ?: "santri"
         val username  = sharedPref.getString("USERNAME", "User") ?: "user"
         val avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=$username"
+
+        val searchAdapter = KeluhanAdapter(
+            listKeluhan = emptyList(),
+            role = role,
+            onPendingClick = { keluhan ->
+                KeluhanBottomSheet(keluhan).show(parentFragmentManager, "Respond")
+            },
+            onDoneClick = { keluhan ->
+                // 1. Buat bundle untuk membawa ID Keluhan
+                val bundle = Bundle().apply {
+                    putString("id", keluhan.id)
+                    putString("nama", keluhan.namaSantri)
+                    putString("keluhan", keluhan.title)
+                    putString("status", keluhan.status)
+                    putString("date", keluhan.createdAt)
+                    putString("description", keluhan.description)
+                    putString("handled_at", keluhan.handledAt)
+                    putString("catatan", keluhan.handledNote)
+                    putString("obat", keluhan.medicineName)
+                    putString("quantity", keluhan.medicineQuantity)
+                }
+
+                // 2. Gunakan findNavController untuk navigasi ke DetailKeluhanFragment
+                findNavController().navigate(R.id.detailKeluhanFragment, bundle)
+
+            },
+            onDeleteClick = { keluhan ->
+                showDeleteDialog(keluhan.id)
+            }
+        )
+
+        binding.rvSearchResults.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvSearchResults.adapter = searchAdapter
+
+        binding.searchView.setupWithSearchBar(binding.searchBar)
+
+        binding.searchView.editText.addTextChangedListener(object : android.text.TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                val query = s.toString().lowercase()
+
+                val allData = viewModel.complaints.value ?: emptyList()
+
+                val filteredList = allData.filter {
+                    it.namaSantri.lowercase().contains(query) ||
+                            it.title.lowercase().contains(query)
+                }
+
+                searchAdapter.updateData(filteredList)
+            }
+
+        })
 
         val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)

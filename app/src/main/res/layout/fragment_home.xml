@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
     android:background="@drawable/bg_gradient"
     tools:context=".ui.HomeFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/iv_background"
@@ -89,198 +83,237 @@
             app:layout_constraintStart_toStartOf="@+id/tv_welcome_user"
             app:layout_constraintTop_toBottomOf="@+id/tv_welcome_user" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/keluhan_hari"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_role"
-            android:fontFamily="@font/poppins_semibold"
-            android:textColor="#319887"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:textSize="20sp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvkeluhan"
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/search_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
+            android:backgroundTint="@color/white"
+            android:hint="@string/cari_keluhan"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_background"
-            tools:itemCount="2"
-            tools:listitem="@layout/menu_keluhan" />
+            app:layout_constraintTop_toBottomOf="@id/tv_role" />
 
-        <TextView
-            android:id="@+id/tv_show_more"
+            <TextView
+                android:id="@+id/tv_keluhan_hari_ini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/keluhan_hari"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/search_bar"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="#319887"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:textSize="20sp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvkeluhan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_keluhan_hari_ini"
+                tools:itemCount="2"
+                tools:listitem="@layout/menu_keluhan" />
+
+            <TextView
+                android:id="@+id/tv_show_more"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="21dp"
+                android:gravity="end"
+                android:layout_margin="20dp"
+                android:text="@string/show_more"
+                android:textSize="15sp"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="#319887"
+                app:layout_constraintBottom_toTopOf="@+id/cv_riwayat_keluhan"
+                app:layout_constraintTop_toBottomOf="@+id/rvkeluhan" />
+
+            <LinearLayout
+                android:id="@+id/linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="20dp"
+                android:gravity="end"
+                app:layout_constraintTop_toBottomOf="@+id/rvkeluhan"
+                tools:ignore="UseCompoundDrawables">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_pengasuhan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pengasuhan"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="20dp"
+                app:layout_constraintTop_toBottomOf="@id/linear"
+                android:fontFamily="@font/poppins_semibold"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_riwayat_keluhan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cv_obat"
+                app:layout_constraintHorizontal_weight="1"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_pengasuhan">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_logo_riwayat_keluhan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/riwayat_keluhan"
+                    android:textAlignment="center"
+                    android:textColor="#1C594F" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_obat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="4dp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintBottom_toBottomOf="@+id/cv_riwayat_keluhan"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_riwayat_keluhan"
+                app:layout_constraintTop_toTopOf="@id/cv_riwayat_keluhan">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_logo_stok_obat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/lihat_stok_obat"
+                    android:textAlignment="center"
+                    android:textColor="#1C594F" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/tv_santri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/santri"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@id/cv_riwayat_keluhan"
+                android:fontFamily="@font/poppins_semibold"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_buat_keluhan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/cv_lihat_keluhan_saya"
+                app:layout_constraintHorizontal_weight="1"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_santri">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:padding="10dp"
+                    android:src="@drawable/logo_keluhan_santri_new" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/buat_keluhan"
+                    android:textAlignment="center"
+                    android:textColor="#1C594F" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_lihat_keluhan_saya"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/white"
+                app:layout_constraintHorizontal_weight="1"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/cv_buat_keluhan"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_buat_keluhan"
+                app:layout_constraintTop_toTopOf="@id/cv_buat_keluhan">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_lihatcomplaintsaya" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="@string/lihat_stok_obat"
+                    android:textAlignment="center"
+                    android:textColor="#1C594F" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+        <com.google.android.material.search.SearchView
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="21dp"
-            android:gravity="end"
-            android:layout_margin="20dp"
-            android:text="@string/show_more"
-            android:textSize="15sp"
-            android:fontFamily="@font/poppins_semibold"
-            android:textColor="#319887"
-            app:layout_constraintBottom_toTopOf="@+id/cv_riwayat_keluhan"
-            app:layout_constraintTop_toBottomOf="@+id/rvkeluhan" />
+            android:layout_height="match_parent"
+            android:hint="@string/masukkan_kata_kunci"
+            app:layout_anchor="@id/search_bar">
 
-        <LinearLayout
-            android:id="@+id/linear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="20dp"
-            android:gravity="end"
-            app:layout_constraintTop_toBottomOf="@+id/rvkeluhan"
-            tools:ignore="UseCompoundDrawables">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_search_results"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"/>
 
-        </LinearLayout>
+        </com.google.android.material.search.SearchView>
 
-        <TextView
-            android:id="@+id/tv_pengasuhan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pengasuhan"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"
-            app:layout_constraintTop_toBottomOf="@id/linear"
-            android:fontFamily="@font/poppins_semibold"/>
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_riwayat_keluhan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/cv_obat"
-            app:layout_constraintHorizontal_weight="1"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_pengasuhan">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_logo_riwayat_keluhan" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="@string/riwayat_keluhan"
-                android:textAlignment="center"
-                android:textColor="#1C594F" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_obat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="4dp"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_riwayat_keluhan"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cv_riwayat_keluhan"
-            app:layout_constraintTop_toTopOf="@id/cv_riwayat_keluhan">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_logo_stok_obat" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="@string/lihat_stok_obat"
-                android:textAlignment="center"
-                android:textColor="#1C594F" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:id="@+id/tv_santri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/santri"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/cv_riwayat_keluhan"
-            android:fontFamily="@font/poppins_semibold"/>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_buat_keluhan"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/cv_lihat_keluhan_saya"
-            app:layout_constraintHorizontal_weight="1"
-            android:backgroundTint="@color/white"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="4dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_santri">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:padding="10dp"
-                android:src="@drawable/logo_keluhan_santri_new" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="@string/buat_keluhan"
-                android:textAlignment="center"
-                android:textColor="#1C594F" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_lihat_keluhan_saya"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:backgroundTint="@color/white"
-            app:layout_constraintHorizontal_weight="1"
-            app:cardCornerRadius="15dp"
-            app:cardElevation="4dp"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_buat_keluhan"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cv_buat_keluhan"
-            app:layout_constraintTop_toTopOf="@id/cv_buat_keluhan">
-
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_logo_stok_obat" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="20dp"
-                android:fontFamily="@font/poppins_semibold"
-                android:text="@string/lihat_stok_obat"
-                android:textAlignment="center"
-                android:textColor="#1C594F" />
-
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

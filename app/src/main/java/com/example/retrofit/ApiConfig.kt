@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ApiConfig {
-    private const val BASE_URL = "https://syangkan.petik.or.id/api/"
+    private const val BASE_URL = "https://petikcare.petik.or.id/api/"
 
     fun getApiService(context: Context): ApiService {
         val logging = HttpLoggingInterceptor()

@@ -9,6 +9,7 @@ import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.data.local.room.ComplaintDao
 import com.example.petikcare.pengasuhan.response_complaint.RespondRequest
 import com.example.petikcare.pengasuhan.response_complaint.ResponseDetailComplaint
+import com.example.petikcare.pengasuhan.response_complaint.ResponseGetMyComplaints
 import com.example.petikcare.pengasuhan.response_complaint.RevertResponse
 import com.example.petikcare.santri.RequestCreateComplaints
 import com.example.petikcare.santri.ResponseComplaintsSantri
@@ -180,6 +181,35 @@ class ComplaintRepository(
             }
         } else {
             complaintDao.deleteComplaintById(id)
+        }
+        return response
+    }
+
+    suspend fun getMyComplaint(): Response<ResponseGetMyComplaints> {
+        val response = apiService.getMyComplaints()
+        if (response.isSuccessful) {
+            val items = response.body()?.data
+            if (items != null) {
+                val sharedPref = context.getSharedPreferences("petikCare", Context.MODE_PRIVATE)
+                val username = sharedPref.getString("USERNAME", "Saya") ?: "Saya"
+                withContext(Dispatchers.IO) {
+                    val complaints = items.map { item ->
+                        ComplaintEntity(
+                            id = item.id,
+                            namaSantri = username,
+                            title = item.title,
+                            description = item.description,
+                            status = item.status,
+                            createdAt = item.createdAt,
+                            handledNote = null,
+                            handledAt = null,
+                            medicineName = null,
+                            medicineQuantity = null
+                        )
+                    }
+                    complaintDao.insertComplaints(complaints)
+                }
+            }
         }
         return response
     }

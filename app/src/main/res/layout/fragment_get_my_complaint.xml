@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_gradient"
+    tools:context=".ui.GetMyComplaintFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_arrow_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_arrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="50dp"/>
+
+        <TextView
+            android:id="@+id/tv_lihat_keluhan_saya"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lihat_keluhan"
+            app:layout_constraintTop_toTopOf="@id/iv_arrow_back"
+            app:layout_constraintStart_toStartOf="@id/iv_arrow_back"
+            android:layout_marginStart="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_arrow_back"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="24sp"
+            android:textColor="#53BF6C"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_keluhan_saya"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/iv_arrow_back"
+            android:layout_margin="10dp"
+            tools:listitem="@layout/menu_keluhan"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

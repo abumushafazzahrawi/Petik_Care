@@ -3,6 +3,8 @@ package com.example.retrofit
 import com.example.petikcare.pengasuhan.response_complaint.ResponseComplaints
 import com.example.petikcare.pengasuhan.response_complaint.RespondRequest
 import com.example.petikcare.pengasuhan.response_complaint.ResponseDetailComplaint
+import com.example.petikcare.pengasuhan.response_complaint.ResponseGetMyComplaints
+import com.example.petikcare.pengasuhan.response_complaint.ResponseSearchComplaint
 import com.example.petikcare.pengasuhan.response_complaint.RevertResponse
 import com.example.petikcare.pengasuhan.response_obat.EditObat
 import com.example.petikcare.pengasuhan.response_obat.GeneralResponse
@@ -83,6 +85,15 @@ interface ApiService {
     suspend fun deleteComplaints(
         @Path("id") id: String?,
     ): Response<ResponseDeleteComplaintSantri>
+
+    @GET("complaints/search/{id}")
+    suspend fun searchComplaints(
+        @Path("id") id: String?,
+    ): Response<ResponseSearchComplaint>
+
+    @GET("complaints/mycomplaints")
+    suspend fun getMyComplaints(
+    ): Response<ResponseGetMyComplaints>
 
 
 }
