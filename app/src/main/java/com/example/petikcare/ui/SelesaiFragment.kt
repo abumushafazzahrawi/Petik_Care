@@ -47,6 +47,7 @@ class SelesaiFragment : Fragment() {
             onPendingClick = {},
             onDoneClick = { keluhan ->
                 val bundle = Bundle().apply {
+                    putString("id", keluhan.id)
                     putString("nama", keluhan.namaSantri)
                     putString("keluhan", keluhan.title)
                     putString("status", keluhan.status)

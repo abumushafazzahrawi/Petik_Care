@@ -53,6 +53,18 @@ class DetailKeluhanFragment : Fragment() {
         val ditangani = arguments?.getString("handled_at")
         val catatan = arguments?.getString("catatan")
 
+        viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
+            event?.getContentIfNotHandled()?.let { message ->
+                if (message == "Berhasil membatalkan") {
+                    Toast.makeText(requireContext(), "Penanganan dibatalkan", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
+                } else {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
 
         if (ditangani != null) {
             binding.tvDitangani.visibility = View.VISIBLE
@@ -74,7 +86,7 @@ class DetailKeluhanFragment : Fragment() {
             showRevertDialog(id)
         }
 
-        binding.btnBatalPenanganan.visibility = if (status == "SELESAI") View.VISIBLE else View.GONE
+        binding.btnBatalPenanganan.visibility = if (status.equals("SELESAI", ignoreCase = true)) View.VISIBLE else View.GONE
 
     }
 
@@ -91,16 +103,6 @@ class DetailKeluhanFragment : Fragment() {
             setMessage("Apakah Anda yakin ingin membatalkan penanganan keluhan ini?")
             setPositiveButton("Ya") { dialog, _ ->
                 viewModel.revertComplaint(complaintId)
-
-                viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
-                    event?.getContentIfNotHandled()?.let { message ->
-                        if (message == "Berhasil membatalkan") {
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                            findNavController().navigateUp()
-                        }
-                    }
-                }
-
                 dialog.dismiss()
             }
             setNegativeButton("Tidak") { dialog, _ ->
