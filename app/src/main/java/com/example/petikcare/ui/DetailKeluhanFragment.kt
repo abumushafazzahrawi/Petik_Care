@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.petikcare.adapter.KeluhanAdapter
 import com.example.petikcare.databinding.FragmentDetailKeluhanBinding
 import com.example.petikcare.di.Injection
+import com.example.petikcare.utils.DateFormat
 import com.example.petikcare.viewmodel.ComplaintViewModel
 import com.example.petikcare.viewmodel.ViewModelFactory
 import java.text.SimpleDateFormat
@@ -55,7 +56,7 @@ class DetailKeluhanFragment : Fragment() {
 
         if (ditangani != null) {
             binding.tvDitangani.visibility = View.VISIBLE
-            binding.tvDitangani.text = "\uD83D\uDD52 Ditangani: ${formatTanggal(ditangani)}"
+            binding.tvDitangani.text = "\uD83D\uDD52 Ditangani: ${DateFormat.formatTanggal(ditangani)}"
         }
 
         binding.tvNama.text = "\uD83D\uDC64 Nama: $nama"
@@ -80,18 +81,6 @@ class DetailKeluhanFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun formatTanggal(dateString: String): String {
-        return try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-
-            val date = inputFormat.parse(dateString)
-            outputFormat.format(date!!)
-        } catch (e: Exception) {
-            dateString // Fallback kalau error
-        }
     }
 
     private fun showRevertDialog(complaintId: String?) {

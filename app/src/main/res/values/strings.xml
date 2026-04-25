@@ -111,9 +111,11 @@
     <string name="hapus_keluhan">Hapus keluhan</string>
 
     <!--    Menu lihat keluhan saya-->
-    <string name="lihat_keluhan">Lihat keluhan Saya</string>
+    <string name="lihat_keluhan_saya">Santri\nLihat Keluhan Saya</string>
     <string name="pengasuhan">Pengasuhan</string>
     <string name="santri">Santri</string>
+    <string name="lihat_keluhan">Lihat Keluhan</string>
 
+    <string name="belum_ada_keluhan">Belum ada keluhan saya</string>
 
 </resources>

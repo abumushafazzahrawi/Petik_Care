@@ -14,6 +14,7 @@ import com.example.petikcare.R
 import com.example.petikcare.adapter.ObatAdapter
 import com.example.petikcare.data.local.room.ObatDatabase
 import com.example.petikcare.data.remote.ObatRepository
+import com.example.petikcare.data.remote.Result
 import com.example.petikcare.databinding.FragmentObatBinding
 import com.example.petikcare.pengasuhan.response_obat.ObatRequest
 import com.example.petikcare.viewmodel.ObatViewModel
@@ -33,7 +34,7 @@ class ObatFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentObatBinding.inflate(inflater, container, false)
         return binding.root
@@ -60,14 +61,25 @@ class ObatFragment : Fragment() {
         obatAdapter = ObatAdapter(listOf())
         binding.rvObat.adapter = obatAdapter
 
-        viewModel.listObat.observe(viewLifecycleOwner) { event ->
-            event.getContentIfNotHandled()?.let { data ->
-                obatAdapter.updateData(data)
+        viewModel.listObat.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressbar.visibility = View.VISIBLE
+                }
+
+                is Result.Success -> {
+                    binding.progressbar.visibility = View.GONE
+                    obatAdapter.updateData(result.data)
+                }
+
+                is Result.Error -> {
+                    binding.progressbar.visibility = View.GONE
+                    Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
+                }
             }
         }
-
-        viewModel.getAllObat()
     }
+
 
     private fun createDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_tambah_obat, null)

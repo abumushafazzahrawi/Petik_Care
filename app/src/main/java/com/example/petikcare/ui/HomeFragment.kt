@@ -129,6 +129,12 @@ class HomeFragment : Fragment() {
 
         })
 
+        if (role == "santri") {
+            binding.searchBar.visibility = View.GONE
+        } else {
+            binding.searchBar.visibility = View.VISIBLE
+        }
+
         val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)
 
@@ -174,6 +180,10 @@ class HomeFragment : Fragment() {
             error(R.drawable.ic_profile) // Gambar jika error
         }
 
+        binding.cvLihatKeluhanSaya.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_getMyComplaintFragment)
+        }
+
 
 
         Log.d("HOME_DEBUG", "USERNAME: $name")
@@ -215,38 +225,32 @@ class HomeFragment : Fragment() {
 
         //Observe Data
         viewModel.complaints.observe(viewLifecycleOwner) { data ->
-
             if (data.isNullOrEmpty()) {
                 keluhanAdapter.updateData(emptyList())
+                binding.tvShowMore.visibility = View.GONE
                 return@observe
             }
 
-            val sorted = data.sortedByDescending { it.createdAt }
+            val sorted = data.sortedByDescending { it.createdAt?: "" }
 
             // Logicnya -> jika data tidak kosong atau ada data terbaru maka tampilkan 3 data
-            val finalData = if (isExpanded) {
-                sorted
-            } else {
-                // Kalo data tidak ada yang baru maka tampilkan 3 data lama
-                sorted.take(3)
-            }
-
+            val finalData = if (isExpanded)  sorted else sorted.take(3)
             keluhanAdapter.updateData(finalData)
+
+            binding.tvShowMore.visibility = if (data.size > 3) View.VISIBLE else View.GONE
+            binding.tvShowMore.text = if (isExpanded) "Show Less" else "Show More"
+
+            binding.rvkeluhan.requestLayout()
         }
 
         binding.tvShowMore.setOnClickListener {
             isExpanded = !isExpanded
-
+            // Trigger observe ulang untuk memperbarui tampilan
             viewModel.complaints.value?.let { data ->
-                val sorted = data.sortedByDescending { it.createdAt }
-
-                if (isExpanded) {
-                    keluhanAdapter.updateData(sorted)
-                    binding.tvShowMore.text = "Show Less"
-                } else {
-                    keluhanAdapter.updateData(sorted.take(3))
-                    binding.tvShowMore.text = "Show More"
-                }
+                val sorted = data.sortedByDescending { it.createdAt?: "" }
+                val finalData = if (isExpanded) sorted else sorted.take(3)
+                keluhanAdapter.updateData(finalData)
+                binding.tvShowMore.text = if (isExpanded) "Show Less" else "Show More"
             }
         }
 

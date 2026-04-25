@@ -196,15 +196,15 @@ class ComplaintRepository(
                     val complaints = items.map { item ->
                         ComplaintEntity(
                             id = item.id,
-                            namaSantri = username,
+                            namaSantri = item.santri.name ?: username,
                             title = item.title,
                             description = item.description,
                             status = item.status,
                             createdAt = item.createdAt,
-                            handledNote = null,
-                            handledAt = null,
-                            medicineName = null,
-                            medicineQuantity = null
+                            handledNote = item.treatment?.note ?: item.handledNote,
+                            handledAt = item.handledAt,
+                            medicineName = item.treatment?.medicinesGiven?.joinToString(", ") { it.name },
+                            medicineQuantity = item.treatment?.medicinesGiven?.joinToString(", ") { it.quantity.toString() }
                         )
                     }
                     complaintDao.insertComplaints(complaints)

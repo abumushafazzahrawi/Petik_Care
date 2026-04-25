@@ -55,22 +55,22 @@ interface ApiService {
         @Path("id") id: String
     ): Response<RevertResponse>
 
-    @GET("medicine/lookup")
+    @GET("medicines/lookup")
     suspend fun getAllObat(
     ): Response<ResponseGetObat>
 
-    @POST("medicine/create")
+    @POST("medicines/create")
     suspend fun createObat(
         @Body request: ObatRequest
     ): Response<GeneralResponse>
 
-    @PATCH("medicine/restock/{id}")
+    @PATCH("medicines/restock/{id}")
     suspend fun restockObat(
         @Path("id") id: String?,
         @Body request: RestockObat
     ): Response<ResponseRestockObat>
 
-    @PATCH("medicine/edit/{id}")
+    @PATCH("medicines/edit/{id}")
     suspend fun editObat(
         @Path("id") id: String?,
         @Body request: EditObat

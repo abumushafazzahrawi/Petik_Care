@@ -46,16 +46,21 @@ class EditObatFragment : Fragment() {
         binding.etNamaObatBaru.setText(nama)
 
         val listSediaan = listOf(
-            "tablet",
-            "kapsul",
-            "pil",
-            "suppositoria",
-            "ovula",
-            "salep",
-            "krim",
-            "gel",
-            "sirup",
-            "suspensi"
+            "Obat tetes",
+            "Aerosol",
+            "Tablet",
+            "Gel",
+            "Krim",
+            "Suspensi",
+            "Injeksi",
+            "Sirup",
+            "Ovula",
+            "Infus",
+            "Kapsul",
+            "Suppositoria",
+            "Emulsi",
+            "Salep",
+            "Pil"
         )
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listSediaan)

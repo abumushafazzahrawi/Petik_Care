@@ -11,6 +11,7 @@ import com.example.petikcare.databinding.MenuObatBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.navigation.findNavController
+import com.example.petikcare.utils.DateFormat
 
 class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAdapter.ViewHolder>() {
 
@@ -30,8 +31,8 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
         holder.binding.tvNamaObat.text = "\uD83D\uDC8A Nama Obat: ${Obat.name}"
         holder.binding.tvDeskripsi.text = "\uD83D\uDCDD Deskripsi: ${Obat.description}"
         holder.binding.tvStok.text = "\uD83D\uDCE6 Stok: ${Obat.stock}"
-        holder.binding.tvDibuat.text = "\uD83D\uDD52 Dibuat: ${formatTanggal(Obat.createdAt)}"
-        holder.binding.tvUpdate.text = "\uD83D\uDD52 Diupdate: ${formatTanggal(Obat.updatedAt)}"
+        holder.binding.tvDibuat.text = "\uD83D\uDD52 Dibuat: ${DateFormat.formatTanggal(Obat.createdAt)}"
+        holder.binding.tvUpdate.text = "\uD83D\uDD52 Diupdate: ${DateFormat.formatTanggal(Obat.updatedAt)}"
 
         val stok = Obat.stock
         if (stok < 5) {
@@ -73,30 +74,4 @@ class ObatAdapter(var listObat: List<ObatEntity>) : RecyclerView.Adapter<ObatAda
         listObat = newData
         notifyDataSetChanged()
     }
-}
-
-
-fun formatTanggal(dateString: String): String {
-    return try {
-
-        //Intinya kita ngasih tau ke Android cara membaca data dari API
-        val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        // API ngasih "2026-03-16T05:39:34.000Z"
-        //Kita bilang ke android “Kalau nanti ada tanggal, bentuknya kayak gini ya—tolong ngertiin
-        input.timeZone = java.util.TimeZone.getTimeZone("UTC")
-        // parse -> ubah tipe data dari string ke date -> Ini loh stringnya, tolong ubah jadi Date beneran”
-        val date = input.parse(dateString)
-
-        // Format ulang
-        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-
-        if (date != null) {
-            outputFormat.format(date)
-        } else {
-            "-"
-        }
-    } catch (e: Exception) {
-        dateString
-    }
-    //Sekarang tampilin dengan gaya yang manusia gunakan sehari-hari
 }

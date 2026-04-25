@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_gradient"
+    android:fillViewport="true"
     tools:context=".ui.GetMyComplaintFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,6 +21,19 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="30dp"
             android:layout_marginTop="50dp"/>
+
+        <TextView
+            android:id="@+id/tv_belum_ada_keluhan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/belum_ada_keluhan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:fontFamily="@font/poppins_medium"
+            android:textColor="#53BF6C"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/tv_lihat_keluhan_saya"

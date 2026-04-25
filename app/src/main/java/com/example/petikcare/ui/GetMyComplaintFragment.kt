@@ -84,7 +84,12 @@ class GetMyComplaintFragment : Fragment() {
             }
 
             keluhanAdapter.updateData(entities)
+            binding.tvBelumAdaKeluhan.visibility = View.GONE
 
+        }
+
+        binding.ivArrowBack.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

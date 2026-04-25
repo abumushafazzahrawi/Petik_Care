@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
+import com.example.petikcare.utils.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -35,7 +36,8 @@ class KeluhanAdapter(
         val keluhan = listKeluhan[position]
         holder.binding.tvNama.text = "\uD83D\uDC64 Nama: ${keluhan.namaSantri}"
         holder.binding.tvKeluhan.text = "\uD83D\uDCCC Keluhan: ${keluhan.title}"
-        holder.binding.tvDate.text = "\uD83D\uDD52 Dibuat: ${formatTanggal(keluhan.createdAt)}"
+        holder.binding.tvDate.text =
+            "\uD83D\uDD52 Dibuat: ${DateFormat.formatTanggal(keluhan.createdAt)}"
         holder.binding.tvDeskripsi.text = "\uD83D\uDCDD Deskripsi: ${keluhan.description}"
         holder.binding.tvStatus.text = "Status: ${keluhan.status}"
         val status = keluhan.status
@@ -89,30 +91,5 @@ class KeluhanAdapter(
     fun updateData(newData: List<ComplaintEntity>) {
         listKeluhan = newData
         notifyDataSetChanged()
-    }
-
-    fun formatTanggal(dateString: String): String {
-        return try {
-
-            //Intinya kita ngasih tau ke Android cara membaca data dari API
-            val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-            // API ngasih "2026-03-16T05:39:34.000Z"
-            //Kita bilang ke android “Kalau nanti ada tanggal, bentuknya kayak gini ya—tolong ngertiin
-            input.timeZone = java.util.TimeZone.getTimeZone("UTC")
-            // parse -> ubah tipe data dari string ke date -> Ini loh stringnya, tolong ubah jadi Date beneran”
-            val date = input.parse(dateString)
-
-            // Format ulang
-            val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID"))
-
-            if (date != null) {
-                outputFormat.format(date)
-            } else {
-                "-"
-            }
-        } catch (e: Exception) {
-            dateString
-        }
-        //Sekarang tampilin dengan gaya yang manusia gunakan sehari-hari
     }
 }

@@ -37,10 +37,10 @@ class ObatRepository(
                         stock = item.stock,
                         createdAt = item.createdAt,
                         updatedAt = item.updatedAt,
-                        preparation = existingObat?.preparation
+                        preparation = existingObat?.preparation ?: "-"
                     )
                 } ?: emptyList()
-
+                obatDao.deleteAllObat()
                 obatDao.insertObat(data)
 
                 val updateData = obatDao.getAllObat()

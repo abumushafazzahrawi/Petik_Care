@@ -18,8 +18,7 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _listObat = MutableLiveData<Event<List<ObatEntity>>>()
-    val listObat: LiveData<Event<List<ObatEntity>>> = _listObat
+    val listObat: LiveData<Result<List<ObatEntity>>> = repository.getObat()
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
@@ -30,34 +29,6 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
     private val _editResult = MutableLiveData<Event<ResponseEditObat>>()
     val editResult: LiveData<Event<ResponseEditObat>> = _editResult
 
-    fun getAllObat() {
-        _isLoading.value = true
-        _errorMessage.value = null
-
-        viewModelScope.launch {
-            try {
-              repository.getObat().observeForever { result ->
-                    when (result) {
-                        is Result.Loading -> _isLoading.value = false
-                        is Result.Success -> {
-                            _isLoading.value = false
-                            _listObat.value = Event(result.data)
-                            // Convert Entity -> UI
-                    }
-                        is Result.Error -> {
-                            _isLoading.value = false
-                            _errorMessage.value = result.error
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                _isLoading.value = false
-                _errorMessage.value = "Koneksi bermasalah: ${e.localizedMessage}"
-
-            }
-        }
-    }
-
     fun createObat(request: ObatRequest) {
         _isLoading.value = true
 
@@ -65,7 +36,7 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
             try {
                 val response = repository.createObat(request)
                 if (response.isSuccessful) {
-                    getAllObat()
+
                 } else {
                     _isLoading.value = false
                     _errorMessage.value = "Gagal membuat obat"
@@ -85,7 +56,6 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
                 val response = repository.restockObat(id, stok)
                 if (response.isSuccessful) {
                     _restockResult.value = Event(response.body()!!)
-                    getAllObat()
                 } else {
                     _errorMessage.value = Event("Gagal restock: ${response.message()}").toString()
                 }
@@ -106,7 +76,6 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
                 val response = repository.editObat(id, request)
                 if (response.isSuccessful) {
                     _editResult.value = Event(response.body()!!)
-                    getAllObat()
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Gagal Edit: ${e.message}"

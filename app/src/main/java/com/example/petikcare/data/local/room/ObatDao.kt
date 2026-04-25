@@ -17,4 +17,7 @@ interface ObatDao {
 
     @Query("SELECT * FROM obat WHERE id = :id")
     suspend fun getObatByid(id: String): ObatEntity?
+
+    @Query("DELETE FROM obat")
+    suspend fun deleteAllObat()
 }

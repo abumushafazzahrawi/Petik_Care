@@ -24,6 +24,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.petikcare.R
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.data.local.entity.ObatEntity
+import com.example.petikcare.data.remote.Result
 import com.example.petikcare.databinding.BottomSheetKeluhanBinding
 import com.example.petikcare.di.Injection
 import com.example.petikcare.di.ObatInjection
@@ -52,7 +53,8 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDial
             if (isGranted) {
                 Toast.makeText(requireContext(), "Notifikasi diizinkan", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Notifikasi tidak diizinkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Notifikasi tidak diizinkan", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -76,7 +78,11 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDial
 
         // Request permission notifikasi untuk Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
@@ -100,7 +106,7 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDial
         // Observe data complaint
         viewModel.responseComplaint.observe(viewLifecycleOwner) { event ->
             event?.getContentIfNotHandled()?.let { response ->
-                
+
                 // Navigasi langsung ke DetailKeluhanFragment
                 val detailData = response.data
                 val bundle = Bundle().apply {
@@ -110,26 +116,46 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDial
                     putString("status", detailData.status)
                     putString("handled_at", detailData.handledAt)
                     putString("catatan", detailData.treatment.note)
-                    putString("obat", detailData.treatment.medicinesGiven.joinToString(", ") { it.name })
-                    putString("quantity", detailData.treatment.medicinesGiven.joinToString(", ") { it.quantity.toString() })
+                    putString(
+                        "obat",
+                        detailData.treatment.medicinesGiven.joinToString(", ") { it.name })
+                    putString(
+                        "quantity",
+                        detailData.treatment.medicinesGiven.joinToString(", ") { it.quantity.toString() })
                 }
 
                 createNotification(title, message, bundle)
                 Toast.makeText(requireContext(), "Berhasil respond", Toast.LENGTH_SHORT).show()
-                
+
                 findNavController().navigate(R.id.detailKeluhanFragment, bundle)
                 dismiss()
                 viewModel.clearResponse()
             }
         }
 
-        obatViewModel.getAllObat()
-        obatViewModel.listObat.observe(viewLifecycleOwner) { event ->
-            val obatList = event.getContentIfNotHandled() ?: return@observe
-            listObat = obatList
+        obatViewModel.listObat.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
 
-            if (selectedMedicines.isEmpty()) {
-                tambahBarisObat()
+                }
+
+                is Result.Success -> {
+                    listObat = result.data
+
+                    if (listObat.isNotEmpty() && selectedMedicines.isEmpty()) {
+                        tambahBarisObat()
+                    }
+                }
+                is Result.Error -> {
+                    Toast.makeText(requireContext(), "Gagal memuat obat", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
+        obatViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
 

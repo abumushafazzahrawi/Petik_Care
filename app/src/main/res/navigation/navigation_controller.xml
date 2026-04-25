@@ -14,14 +14,17 @@
             android:id="@+id/action_homeFragment_to_loginActivity"
             app:destination="@id/loginActivity" />
         <action
-            android:id="@+id/action_homeFragment_to_obatFragment"
-            app:destination="@id/obatFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_riwayatKeluhanFragment"
             app:destination="@id/riwayatKeluhanFragment" />
         <action
             android:id="@+id/action_homeFragment_to_createComplaintSantriFragment"
             app:destination="@id/createComplaintSantriFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_obatFragment"
+            app:destination="@id/obatFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_getMyComplaintFragment"
+            app:destination="@id/getMyComplaintFragment" />
 
     </fragment>
 
@@ -88,4 +91,9 @@
         android:name="com.example.petikcare.ui.CreateComplaintSantriFragment"
         android:label="fragment_create_complaint_santri"
         tools:layout="@layout/fragment_create_complaint_santri" />
+    <fragment
+        android:id="@+id/getMyComplaintFragment"
+        android:name="com.example.petikcare.ui.GetMyComplaintFragment"
+        android:label="fragment_get_my_complaint"
+        tools:layout="@layout/fragment_get_my_complaint" />
 </navigation>
