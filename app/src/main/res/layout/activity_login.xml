@@ -52,7 +52,7 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/tv_sign_in"
+                android:id="@+id/tv_login"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_semibold"
@@ -70,14 +70,14 @@
                 android:id="@+id/tv_desc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/silahkan_login"
+                android:text="@string/silahkan_sign_in"
                 android:gravity="center"
                 android:textSize="18sp"
                 android:fontFamily="@font/poppins_medium"
                 android:textColor="#95989F"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_sign_in" />
+                app:layout_constraintTop_toBottomOf="@id/tv_login" />
             
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
@@ -151,7 +151,7 @@
                 android:layout_marginHorizontal="15dp"
                 android:background="@drawable/btn_login_gradient"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="@string/login"
+                android:text="@string/sign_in"
                 android:textSize="15sp"
                 app:cornerRadius="30dp"
                 android:elevation="6dp"

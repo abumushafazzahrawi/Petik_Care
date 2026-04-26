@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.databinding.MenuKeluhanBinding
@@ -46,7 +47,10 @@ class KeluhanAdapter(
                 holder.binding.tvStatus.setTextColor(Color.RED)
 
             "SELESAI" ->
-                holder.binding.tvStatus.setTextColor(Color.GREEN)
+                holder.binding.tvStatus.setTextColor("#1C594F".toColorInt())
+
+            else ->
+                holder.binding.tvStatus.setTextColor(Color.BLACK)
         }
 
         holder.binding.btnDetail.setOnClickListener {

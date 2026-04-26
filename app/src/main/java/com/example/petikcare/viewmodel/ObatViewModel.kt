@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
-import coil.transform.Transformation
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.remote.ObatRepository
 import com.example.petikcare.data.remote.Result

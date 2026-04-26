@@ -4,10 +4,9 @@
 
     <!--    Halaman Login-->
     <string name="sign_in">Sign In</string>
-    <string name="silahkan_login">Silahkan login untuk melanjutkan</string>
+    <string name="silahkan_sign_in">Silahkan sign in untuk melanjutkan</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="login">Login</string>
 
 
     <!--    Halaman Home Fragment-->

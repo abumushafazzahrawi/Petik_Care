@@ -18,6 +18,7 @@ import androidx.core.content.edit
 import com.example.petikcare.databinding.FragmentProfilBinding
 import androidx.core.view.isGone
 import android.Manifest
+import androidx.appcompat.app.AlertDialog
 import coil.decode.SvgDecoder
 import coil.load
 import com.example.petikcare.R
@@ -80,21 +81,7 @@ class ProfilFragment : Fragment() {
         binding.tvRole.text = role
 
         binding.btnLogout.setOnClickListener {
-            sharedPref.edit {
-                // 1. Hapus data session
-                clear()
-            }
-
-            // 2. Pindah ke LoginActivity
-            val intent = Intent(requireContext(), LoginActivity::class.java)
-
-            // 3. Clear stack activity
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-            startActivity(intent)
-            requireActivity()
-                .finish()
-
+            createDialogLogOut()
         }
 
 //        binding.cvCardProfil.setOnClickListener {
@@ -117,7 +104,39 @@ class ProfilFragment : Fragment() {
             error(R.drawable.ic_profile) // Gambar jika error
         }
     }
+
+    private fun createDialogLogOut() {
+        AlertDialog.Builder(requireContext()).apply {
+            setTitle("Tutup Aplikasi")
+            setMessage("Apakah anda yakin ingin keluar dari aplikasi ini?")
+            setPositiveButton("Ya") { _, _, ->
+                logOut()
+            }
+            setNegativeButton("Tidak", null)
+            show()
+        }
+    }
+
+    private fun logOut() {
+        val sharedPref = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        sharedPref.edit {
+
+            // 1. Hapus data session
+            clear()
+        }
+
+        // 2. Pindah ke LoginActivity
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+
+        // 3. Clear stack activity
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+        startActivity(intent)
+        requireActivity()
+            .finish()
+    }
 }
+
 
 //        binding.cvEditFoto.setOnClickListener {
 //            showImagePickerDialog()
@@ -161,4 +180,5 @@ class ProfilFragment : Fragment() {
 //    private fun openCamera() {
 //        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 //        cameraLauncher.launch(intent)
+
 

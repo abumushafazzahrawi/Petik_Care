@@ -40,7 +40,11 @@
         app:itemIconTint="@color/nav_item_color"
         app:itemTextColor="@color/nav_item_color"
         app:itemActiveIndicatorStyle="@null"
-        app:labelVisibilityMode="labeled"/>
+        app:labelVisibilityMode="labeled"
+        app:paddingBottomSystemWindowInsets="false"
+        app:paddingLeftSystemWindowInsets="false"
+        app:paddingTopSystemWindowInsets="false"
+        app:paddingRightSystemWindowInsets="false" />
 
     </com.google.android.material.card.MaterialCardView>
 

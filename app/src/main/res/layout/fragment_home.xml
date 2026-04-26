@@ -189,7 +189,6 @@
                 android:id="@+id/cv_obat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:backgroundTint="@color/white"
                 app:cardCornerRadius="15dp"
                 app:cardElevation="4dp"
