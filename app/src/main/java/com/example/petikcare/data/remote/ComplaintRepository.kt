@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.petikcare.data.local.entity.ComplaintEntity
 import com.example.petikcare.data.local.room.ComplaintDao
+import com.example.petikcare.data.local.room.ObatDao
 import com.example.petikcare.pengasuhan.response_complaint.RespondRequest
 import com.example.petikcare.pengasuhan.response_complaint.ResponseDetailComplaint
 import com.example.petikcare.pengasuhan.response_complaint.ResponseGetMyComplaints
@@ -27,6 +28,7 @@ import retrofit2.Response
 class ComplaintRepository(
     private val apiService: ApiService,
     private val complaintDao: ComplaintDao,
+    private val obatDao: ObatDao,
     private val context: Context
 ) {
 
@@ -45,21 +47,21 @@ class ComplaintRepository(
                 val currentLocalData = complaintDao.getAllComplaintsList()
 
                 val complaints = responseData.map { item ->
-                    val treatment = item.treatment
-                    val medicines = treatment?.medicinesGiven
+                    val transactions = item.medicineTransaction ?: emptyList()
 
-                    val existing = currentLocalData.find { it.id == item.id }
+                    val mediciNames = transactions.map { transactions ->
+                        val obatLokal = obatDao.getObatByid(transactions.medicineId)
+                        obatLokal?.name ?: "Obat (ID: ${transactions.medicineId.take(5)}"
+                    }.joinToString("\n") { "- $it" }
 
-                    // Notifikasi jika status berubah dari PENDING ke SELESAI
-                    if (existing?.status == "PENDING" && item.status == "SELESAI") {
-                        NotificationHelper.showNotification(context, "Keluhan Selesai", "Keluhan Anda telah ditangani")
+                    val medicineQtys = transactions.joinToString("\n") {
+                        it.quantity.toString()
                     }
 
-                    val medicineNames = medicines?.joinToString(", ") { it.name }
-                        ?: existing?.medicineName
-
-                    val medicineQuantities = medicines?.joinToString(", ") { it.quantity.toString() }
-                        ?: existing?.medicineQuantity
+                    val existing = currentLocalData.find { it.id == item.id }
+                    if (existing?.status.equals("PENDING", ignoreCase = true) && item.status.equals("SELESAI", ignoreCase = true)) {
+                        NotificationHelper.showNotification(context, "Keluhan Selesai", "Keluhan Anda telah ditangani")
+                    }
 
                     ComplaintEntity(
                         id = item.id,
@@ -68,10 +70,10 @@ class ComplaintRepository(
                         description = item.description,
                         status = item.status,
                         createdAt = item.createdAt,
-                        handledNote = treatment?.note ?: existing?.handledNote ?: item.handledNote,
-                        handledAt = item.handledAt ?: existing?.handledAt,
-                        medicineName = medicineNames,
-                        medicineQuantity = medicineQuantities
+                        handledNote = item.handledNote,
+                        handledAt = item.handledAt,
+                        medicineName = if (transactions.isNotEmpty()) mediciNames else null,
+                        medicineQuantity = medicineQtys
                     )
                 }
                 complaintDao.insertComplaints(complaints)
@@ -194,6 +196,16 @@ class ComplaintRepository(
                 val username = sharedPref.getString("USERNAME", "Saya") ?: "Saya"
                 withContext(Dispatchers.IO) {
                     val complaints = items.map { item ->
+                        val transactions = item.medicineTransaction ?: emptyList()
+                        val names  = transactions.map { transactions ->
+                            val obatLokal = obatDao.getObatByid(transactions.medicineId)
+                            obatLokal?.name ?: "Obat (ID: ${transactions.medicineId.take(5)}... )"
+                        }.joinToString("\n") { "-$it"}
+
+                        val qtys = transactions.joinToString("\n") {
+                            it.quantity.toString()
+                        }
+
                         ComplaintEntity(
                             id = item.id,
                             namaSantri = item.santri.name ?: username,
@@ -201,10 +213,10 @@ class ComplaintRepository(
                             description = item.description,
                             status = item.status,
                             createdAt = item.createdAt,
-                            handledNote = item.treatment?.note ?: item.handledNote,
+                            handledNote = item.handledNote,
                             handledAt = item.handledAt,
-                            medicineName = item.treatment?.medicinesGiven?.joinToString(", ") { it.name },
-                            medicineQuantity = item.treatment?.medicinesGiven?.joinToString(", ") { it.quantity.toString() }
+                            medicineName = if (transactions.isNotEmpty()) names else null,
+                            medicineQuantity = if (transactions.isNotEmpty()) qtys else null
                         )
                     }
                     complaintDao.insertComplaints(complaints)
@@ -221,10 +233,11 @@ class ComplaintRepository(
         fun getInstance(
             apiService: ApiService,
             dao: ComplaintDao,
+            obatDao: ObatDao,
             context: Context
         ): ComplaintRepository =
             instance ?: synchronized(this) {
-                instance ?: ComplaintRepository(apiService, dao, context)
+                instance ?: ComplaintRepository(apiService, dao, obatDao, context)
                     .also { instance = it }
             }
     }

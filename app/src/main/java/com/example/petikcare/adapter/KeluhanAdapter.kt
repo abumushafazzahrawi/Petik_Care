@@ -50,34 +50,26 @@ class KeluhanAdapter(
         }
 
         holder.binding.btnDetail.setOnClickListener {
-            if (role == "pengasuhan") {
+            val isPengasuhan = role.equals("pengasuhan", ignoreCase = true)
+            val isPending = keluhan.status.equals("PENDING", ignoreCase = true)
 
-                if (keluhan.status == "PENDING") {
-                    onPendingClick(keluhan)
-                } else {
-                    onDoneClick(keluhan)
-
-                }
+            if (isPengasuhan && isPending) {
+                onPendingClick(keluhan)
             } else {
-                Toast.makeText(
-                    holder.itemView.context,
-                    "Akses ditolak: hanya pengasuhan yang bisa melihat detail keluhan",
-                    Toast.LENGTH_SHORT
-                ).show()
+                onDoneClick(keluhan)
             }
         }
-        holder.binding.btnDetail.visibility =
-            if (role.equals("pengasuhan", ignoreCase = true)) View.VISIBLE else View.GONE
-        holder.binding.btnDelete.visibility =
-            if (role.equals("santri", ignoreCase = true)) View.VISIBLE else View.GONE
+
 
         val isSantri = role.equals("santri", ignoreCase = true)
         val isPending = keluhan.status.equals("PENDING", ignoreCase = true)
 
         if (isSantri && isPending) {
             holder.binding.btnDelete.visibility = View.VISIBLE
+            holder.binding.btnDetail.visibility = View.GONE
         } else {
             holder.binding.btnDelete.visibility = View.GONE
+            holder.binding.btnDetail.visibility = View.VISIBLE
         }
         holder.binding.btnDelete.setOnClickListener {
             onDeleteClick(keluhan)

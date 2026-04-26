@@ -141,7 +141,7 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[ComplaintViewModel::class.java]
         viewModel.refreshComplaints()
 
-        binding.tvWelcomeUser.text = "Welcome ${name ?: "User"}"
+        binding.tvWelcomeUser.text = "Welcome ${name ?: "User"} \uD83D\uDC4B"
         binding.tvRole.text = "Role: $role"
 
         if (role.equals("pengasuhan", ignoreCase = true)) {
@@ -231,16 +231,18 @@ class HomeFragment : Fragment() {
                 return@observe
             }
 
-            val sorted = data.sortedByDescending { it.createdAt?: "" }
+            val sorted = data.sortedByDescending { it.createdAt ?: "" }
 
             // Logicnya -> jika data tidak kosong atau ada data terbaru maka tampilkan 3 data
-            val finalData = if (isExpanded)  sorted else sorted.take(3)
+            val finalData = if (isExpanded) sorted else sorted.take(3)
             keluhanAdapter.updateData(finalData)
 
             binding.tvShowMore.visibility = if (data.size > 3) View.VISIBLE else View.GONE
             binding.tvShowMore.text = if (isExpanded) "Show Less" else "Show More"
 
-            binding.rvkeluhan.requestLayout()
+            binding.rvkeluhan.post {
+                binding.rvkeluhan.requestLayout()
+            }
         }
 
         binding.tvShowMore.setOnClickListener {
@@ -249,8 +251,13 @@ class HomeFragment : Fragment() {
             viewModel.complaints.value?.let { data ->
                 val sorted = data.sortedByDescending { it.createdAt?: "" }
                 val finalData = if (isExpanded) sorted else sorted.take(3)
+
                 keluhanAdapter.updateData(finalData)
                 binding.tvShowMore.text = if (isExpanded) "Show Less" else "Show More"
+
+                binding.rvkeluhan.post {
+                    binding.rvkeluhan.requestLayout()
+                }
             }
         }
 

@@ -24,6 +24,13 @@ data class DataComplaints(
     val createdAt: String,
     val updatedAt: String,
     val santri: Santri,
-    val treatment: TreatmentDetail?
+    @SerializedName("medicine_transaction")
+    val medicineTransaction: List<MedicineTransactionItem>?
+)
+
+data class MedicineTransactionItem(
+    @SerializedName("medicine_id")
+    val medicineId: String,
+    val quantity: Int
 )
 

@@ -3,7 +3,9 @@ package com.example.petikcare.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import coil.transform.Transformation
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.remote.ObatRepository
 import com.example.petikcare.data.remote.Result
@@ -18,7 +20,17 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    val listObat: LiveData<Result<List<ObatEntity>>> = repository.getObat()
+    private val _refreshTrigger = MutableLiveData<Unit>()
+    val listObat: LiveData<Result<List<ObatEntity>>> = _refreshTrigger.switchMap {
+        repository.getObat()
+    }
+    init {
+        refreshObat()
+    }
+
+    fun refreshObat() {
+        _refreshTrigger.value = Unit
+    }
 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
@@ -36,7 +48,7 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
             try {
                 val response = repository.createObat(request)
                 if (response.isSuccessful) {
-
+                    refreshObat()
                 } else {
                     _isLoading.value = false
                     _errorMessage.value = "Gagal membuat obat"
@@ -56,11 +68,12 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
                 val response = repository.restockObat(id, stok)
                 if (response.isSuccessful) {
                     _restockResult.value = Event(response.body()!!)
+                    refreshObat()
                 } else {
-                    _errorMessage.value = Event("Gagal restock: ${response.message()}").toString()
+                    _errorMessage.value = "Gagal restock: ${response.message()}"
                 }
             } catch (e: Exception) {
-                _errorMessage.value = Event("Error: ${e.message}").toString()
+                _errorMessage.value = "Error: ${e.message}"
             } finally {
                 _isLoading.postValue(false)
 
@@ -76,6 +89,7 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
                 val response = repository.editObat(id, request)
                 if (response.isSuccessful) {
                     _editResult.value = Event(response.body()!!)
+                    refreshObat()
                 }
             } catch (e: Exception) {
                 _errorMessage.value = "Gagal Edit: ${e.message}"

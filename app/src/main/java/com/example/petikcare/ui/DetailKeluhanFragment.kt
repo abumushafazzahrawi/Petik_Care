@@ -2,6 +2,7 @@ package com.example.petikcare.ui
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,10 @@ class DetailKeluhanFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val sharedPref = requireContext().getSharedPreferences("petikCare", Context.MODE_PRIVATE)
+        val role = sharedPref.getString("ROLE" ,"santri")?: "santri"
+        val isPengasuhan = role.equals("pengasuhan", ignoreCase = true)
+
         val repository = Injection.provideRepository(requireContext())
         viewModel =
             ViewModelProvider(this, ViewModelFactory(repository))[ComplaintViewModel::class.java]
@@ -52,6 +57,12 @@ class DetailKeluhanFragment : Fragment() {
         val quantity = arguments?.getString("quantity")
         val ditangani = arguments?.getString("handled_at")
         val catatan = arguments?.getString("catatan")
+
+        val isSelesai = status.equals("SELESAI", ignoreCase = true)
+
+        if (role.equals("santri", ignoreCase = true)) {
+            binding.btnBatalPenanganan.visibility = View.GONE
+        }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) { event ->
             event?.getContentIfNotHandled()?.let { message ->
@@ -86,8 +97,7 @@ class DetailKeluhanFragment : Fragment() {
             showRevertDialog(id)
         }
 
-        binding.btnBatalPenanganan.visibility = if (status.equals("SELESAI", ignoreCase = true)) View.VISIBLE else View.GONE
-
+        binding.btnBatalPenanganan.visibility = if (isPengasuhan && isSelesai) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

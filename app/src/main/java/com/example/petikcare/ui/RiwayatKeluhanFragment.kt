@@ -15,8 +15,10 @@ import com.example.petikcare.adapter.KeluhanAdapter
 import com.example.petikcare.adapter.RiwayatPagerAdapter
 import com.example.petikcare.data.local.room.ComplaintDao
 import com.example.petikcare.data.local.room.ComplaintDatabase
+import com.example.petikcare.data.local.room.ObatDatabase
 import com.example.petikcare.data.remote.ComplaintRepository
 import com.example.petikcare.databinding.FragmentRiwayatKeluhanBinding
+import com.example.petikcare.di.Injection
 import com.example.petikcare.viewmodel.ComplaintViewModel
 import com.example.petikcare.viewmodel.ViewModelFactory
 import com.example.retrofit.ApiConfig
@@ -41,10 +43,7 @@ class RiwayatKeluhanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val db = ComplaintDatabase.getInstance(requireContext())
-        val dao = db.complaintDao()
-        val repository = ComplaintRepository(ApiConfig.getApiService(requireContext()), dao, requireContext())
+        val repository = Injection.provideRepository(requireContext())
         val factory = ViewModelFactory(repository)
         viewModel = ViewModelProvider(this,factory)[ComplaintViewModel::class.java]
 
