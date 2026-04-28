@@ -27,6 +27,7 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -88,7 +89,7 @@ interface ApiService {
 
     @GET("complaints/search/{id}")
     suspend fun searchComplaints(
-        @Path("id") id: String?,
+        @Query("id") id: String?,
     ): Response<ResponseSearchComplaint>
 
     @GET("complaints/mycomplaints")

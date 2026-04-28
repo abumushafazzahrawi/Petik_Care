@@ -82,6 +82,7 @@
         android:background="@drawable/btn_linear_green"
         android:text="@string/simpan"
         android:layout_marginTop="30dp"
+        android:textColor="@color/white"
         android:fontFamily="@font/poppins_medium"
         app:backgroundTint="@null"
         android:layout_marginHorizontal="50dp"/>

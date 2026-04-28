@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
@@ -87,7 +89,29 @@ class ObatFragment : Fragment() {
         val etNama  = dialogView.findViewById<TextInputEditText>(R.id.et_nama_obat)
         val etDeskripsi = dialogView.findViewById<TextInputEditText>(R.id.et_deskripsi)
         val etStok = dialogView.findViewById<TextInputEditText>(R.id.et_stok)
-        val etSediaan = dialogView.findViewById<TextInputEditText>(R.id.et_sediaan)
+        val spinnerSediaan = dialogView.findViewById<Spinner>(R.id.spinner_item_obat)
+
+        val listSediaan = listOf(
+            "Obat tetes",
+            "Aerosol",
+            "Tablet",
+            "Gel",
+            "Krim",
+            "Suspensi",
+            "Injeksi",
+            "Sirup",
+            "Ovula",
+            "Infus",
+            "Kapsul",
+            "Suppositoria",
+            "Emulsi",
+            "Salep",
+            "Pil"
+        )
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, listSediaan)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerSediaan.adapter = adapter
 
         AlertDialog.Builder(requireContext())
             .setTitle("Tambah Obat")
@@ -98,7 +122,7 @@ class ObatFragment : Fragment() {
                     nama_obat = etNama.text.toString(),
                     deskripsi = etDeskripsi.text.toString(),
                     stok = etStok.text.toString().toIntOrNull() ?: 0,
-                    sediaan = etSediaan.text.toString()
+                    sediaan = spinnerSediaan.selectedItem.toString()
                 )
                 viewModel.createObat(request)
                 Toast.makeText(requireContext(), "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show()

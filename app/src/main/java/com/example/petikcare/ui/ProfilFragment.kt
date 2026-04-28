@@ -108,7 +108,7 @@ class ProfilFragment : Fragment() {
     private fun createDialogLogOut() {
         AlertDialog.Builder(requireContext()).apply {
             setTitle("Tutup Aplikasi")
-            setMessage("Apakah anda yakin ingin keluar dari aplikasi ini?")
+            setMessage("Apakah anda yakin ingin log out dari aplikasi ini?")
             setPositiveButton("Ya") { _, _, ->
                 logOut()
             }

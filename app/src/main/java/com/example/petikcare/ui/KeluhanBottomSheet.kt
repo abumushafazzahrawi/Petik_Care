@@ -175,6 +175,7 @@ class KeluhanBottomSheet(private val keluhan: ComplaintEntity) : BottomSheetDial
                 Toast.makeText(requireContext(), "Harap tambah obat", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
             val request = buildRequest()
             val id = keluhan.id
             viewModel.respondComplaint(id, request)
