@@ -2,6 +2,7 @@ package com.example.petikcare.data.remote
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.example.petikcare.data.local.entity.ObatEntity
 import com.example.petikcare.data.local.room.ObatDao
 import com.example.petikcare.pengasuhan.response_obat.EditObat
@@ -19,10 +20,11 @@ class ObatRepository(
     fun getObat(): LiveData<Result<List<ObatEntity>>> = liveData {
         emit(Result.Loading)
 
-        val localData = obatDao.getAllObat()
-        if (localData.isNotEmpty()) {
-            emit(Result.Success(localData))
-        }
+        val source: LiveData<Result<List<ObatEntity>>> =
+            obatDao.getAllObat().map {
+                Result.Success(it)
+            }
+        emitSource(source)
 
         try {
             val response = apiService.getAllObat()
@@ -40,28 +42,37 @@ class ObatRepository(
                         preparation = existingObat?.preparation ?: "-"
                     )
                 } ?: emptyList()
-                obatDao.deleteAllObat()
                 obatDao.insertObat(data)
-
-                val updateData = obatDao.getAllObat()
-                if (updateData.isNotEmpty()) {
-                    emit(Result.Success(updateData))
-                }
             } else {
                 emit(Result.Error("Gagal mengambil data"))
             }
         } catch (e: Exception) {
-            if (localData.isEmpty()) {
-                emit(Result.Error("Tidak ada koneksi & data kosong"))
+                emit(Result.Error("Koneksi bermasalah"))
             }
         }
-    }
 
     suspend fun createObat(request: ObatRequest) = apiService.createObat(request)
 
     suspend fun restockObat(id: String, stok: Int): Response<ResponseRestockObat> {
         val request = RestockObat(stok)
-        return apiService.restockObat(id, request)
+        val response = apiService.restockObat(id, request)
+        if (response.isSuccessful) {
+            val body = response.body()?.data
+            if (body != null) {
+                val existing = obatDao.getObatByid(id)
+                val updated = ObatEntity(
+                        id = body.id,
+                        name = body.name,
+                        description = body.description,
+                        stock = body.stock,
+                        createdAt = body.createdAt,
+                        updatedAt = body.updatedAt,
+                        preparation = existing?.preparation ?: "-"
+                    )
+                    obatDao.insertObat(listOf(updated))
+                }
+            }
+        return response
     }
 
     suspend fun editObat(id: String, request: EditObat): Response<ResponseEditObat> {

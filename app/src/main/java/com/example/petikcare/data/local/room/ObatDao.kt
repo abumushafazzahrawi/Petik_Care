@@ -1,5 +1,6 @@
 package com.example.petikcare.data.local.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,7 +11,7 @@ import com.example.petikcare.data.local.entity.ObatEntity
 @Dao
 interface ObatDao {
     @Query("SELECT * FROM obat")
-    suspend fun getAllObat(): List<ObatEntity>
+    fun getAllObat(): LiveData<List<ObatEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertObat(obat: List<ObatEntity>)

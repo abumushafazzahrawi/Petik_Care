@@ -59,6 +59,9 @@ class ObatFragment : Fragment() {
         binding.ivArrowBack.setOnClickListener {
             findNavController().navigateUp()
         }
+
+        viewModel.refreshObat()
+
         binding.rvObat.layoutManager = LinearLayoutManager(requireContext())
         obatAdapter = ObatAdapter(listOf())
         binding.rvObat.adapter = obatAdapter
@@ -80,6 +83,7 @@ class ObatFragment : Fragment() {
                 }
             }
         }
+
     }
 
 
@@ -129,5 +133,10 @@ class ObatFragment : Fragment() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -66,7 +66,7 @@ interface ApiService {
     ): Response<GeneralResponse>
 
     @PATCH("medicines/restock/{id}")
-    suspend fun restockObat(
+    suspend fun  restockObat(
         @Path("id") id: String?,
         @Body request: RestockObat
     ): Response<ResponseRestockObat>

@@ -23,12 +23,13 @@ class ObatViewModel(val repository: ObatRepository) : ViewModel() {
     val listObat: LiveData<Result<List<ObatEntity>>> = _refreshTrigger.switchMap {
         repository.getObat()
     }
-    init {
-        refreshObat()
-    }
 
     fun refreshObat() {
         _refreshTrigger.value = Unit
+
+    }
+    init {
+        refreshObat()
     }
 
     private val _errorMessage = MutableLiveData<String?>()
