@@ -129,7 +129,7 @@ class HomeFragment : Fragment() {
 
         })
 
-        if (role == "santri") {
+        if (role.equals("santri", ignoreCase = true)) {
             binding.searchBar.visibility = View.GONE
         } else {
             binding.searchBar.visibility = View.VISIBLE

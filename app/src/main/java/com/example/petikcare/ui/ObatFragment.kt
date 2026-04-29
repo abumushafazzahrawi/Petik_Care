@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,7 +50,7 @@ class ObatFragment : Fragment() {
         val dao = db.obatDao()
         val repository = ObatRepository(ApiConfig.getApiService(requireContext()), dao)
         val factory = ObatViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory)[ObatViewModel::class.java]
+        val viewModel: ObatViewModel by activityViewModels { factory }
 
 
         binding.btnFabAdd.setOnClickListener {
@@ -76,6 +77,8 @@ class ObatFragment : Fragment() {
                     binding.progressbar.visibility = View.GONE
                     obatAdapter.updateData(result.data)
                 }
+
+
 
                 is Result.Error -> {
                     binding.progressbar.visibility = View.GONE
